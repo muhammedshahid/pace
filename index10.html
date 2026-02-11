@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>PACE-Algorithm</title>
+    <style>
+        /* Gallery Styles */
+        /* #output-container {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+        gap: 20px;
+        padding: 20px;
+      } */
+
+        div.root-gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 20px;
+            padding: 20px;
+        }
+
+        .image-container {
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            overflow: hidden;
+            text-align: center;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .image-title {
+            font-size: 16px;
+            font-weight: bold;
+            padding: 10px;
+            background-color: #f8f8f8;
+            color: #333;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .resized-image {
+            width: 100%;
+            /* Full width of the container */
+            height: auto;
+            /* Maintain aspect ratio */
+            display: block;
+        }
+
+        /* Canvas Styles */
+        #canvas {
+            border: 1px solid #000;
+            margin-top: 20px;
+            max-width: 100%;
+            height: auto;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+        }
+
+        button {
+            margin-top: 10px;
+            padding: 10px 20px;
+            font-size: 16px;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>PACE: Perceptual Adaptive Contrast Enhancement Algorithm for Web-Based Image Processing</h1>
+    <input type="file" id="fileInput" accept="image/*" />
+    <div id="output-container"></div>
+
+    <script>
+        const fileInput = document.querySelector('#fileInput');
+        // const imageLoader = document.getElementById('imageLoader');
+        // const canvas = document.getElementById('imageCanvas');
+        // const ctx = canvas.getContext('2d');
+
+        const calPerformance = {
+            canStart: true,
+            start() {
+                if (!this.canStart) return;
+                this.startTime = performance.now();
+                this.canStart = false;
+            },
+            stop() {
+                if (this.canStart) return;
+                this.endTime = performance.now();
+                this.canStart = true;
+                const duration = (this.endTime - this.startTime) / 1000;
+                console.log(`Total processing time: ${duration.toFixed(2)} sec`);
+            }
+        }
+
+        /* ---------- helpers ---------- */
+
+        function createGroup(id) {
+            const rootDiv = document.createElement('div')
+            rootDiv.id = `root-${id}`
+            rootDiv.innerHTML = `<button>Equalize</button><div class='root-gallery'></div>`
+            document.querySelector('#output-container').appendChild(rootDiv)
+            return rootDiv.id
+        }
+
+        function showCase(rootDivId, dataURL, titleText) {
+            // Create a container div to hold the title and image
+            const container = document.createElement('div');
+            container.classList.add('image-container');
+
+            // Create a title element
+            const title = document.createElement('div');
+            title.classList.add('image-title');
+            title.textContent = titleText
+
+            // Create an image element
+            const img = document.createElement('img');
+            img.src = dataURL;
+            img.alt = 'Image';
+            img.classList.add('resized-image');
+
+            // Append the title and image to the container
+            container.appendChild(title);
+            container.appendChild(img);
+
+            // Append the container to the output area
+            const rootDiv = document.getElementById(rootDivId);
+            rootDiv.querySelector('.root-gallery').appendChild(container);
+        }
+
+        function drawImgOnCanvas(img) {
+            const canvas = document.createElement('canvas')
+            // use simple height & width for faster raster
+            canvas.width = img.width //naturalWidth
+            canvas.height = img.height //naturalHeight
+            const ctx = canvas.getContext('2d')
+            ctx.drawImage(img, 0, 0, canvas.width, canvas.height)
+            return canvas
+        }
+
+
+
+        function analyzeEdges(gray, w, h) {
+            let sum = 0;
+            let count = 0;
+
+            for (let y = 1; y < h; y++) {
+                let row = y * w;
+                let prevRow = (y - 1) * w;
+
+                for (let x = 1; x < w; x++) {
+                    const i = row + x;
+                    sum += Math.abs(gray[i] - gray[i - 1]);
+                    sum += Math.abs(gray[i] - gray[prevRow + x]);
+                    count += 2;
+                }
+            }
+
+            const meanGrad = sum / count;
+            const edgeDensity = Math.min(meanGrad / 64, 1);
+
+            let tag;
+            if (edgeDensity < 0.15) tag = 'flat-image';
+            else if (edgeDensity < 0.4) tag = 'low-texture';
+            else if (edgeDensity < 0.7) tag = 'normal-photo';
+            else tag = 'high-texture';
+
+            return {
+                edgeDensity,
+                meanGradient: meanGrad,
+                tag
+            };
+        }
+
+        function analyzeNoise(gray, w, h) {
+            let sum = 0;
+            let count = 0;
+
+            for (let y = 1; y < h - 1; y++) {
+                const row = y * w;
+                const prev = (y - 1) * w;
+                const next = (y + 1) * w;
+
+                for (let x = 1; x < w - 1; x++) {
+                    const i = row + x;
+                    const mean =
+                        (gray[i - 1] +
+                            gray[i + 1] +
+                            gray[prev + x] +
+                            gray[next + x]) * 0.25;
+
+                    sum += Math.abs(gray[i] - mean);
+                    count++;
+                }
+            }
+
+            const noise = sum / count;
+            const noiseNorm = Math.min(noise / 20, 1);
+
+            let tag;
+            if (noiseNorm < 0.2) tag = 'clean';
+            else if (noiseNorm < 0.5) tag = 'mild-noise';
+            else if (noiseNorm < 0.8) tag = 'noisy';
+            else tag = 'very-noisy';
+
+            return {
+                noise,
+                noiseNorm,
+                tag
+            };
+        }
+
+        function computeCLAHEAlpha(edgeDensity, noiseNorm) {
+            let alpha = 0.85;
+            alpha *= (1 - 0.3 * edgeDensity);
+            alpha *= (1 - 0.4 * noiseNorm);
+            return Math.min(0.85, Math.max(0.45, alpha));
+        }
+
+
+        function chooseTileSize(edgeDensity) {
+            const t = 48 * (1 - edgeDensity) + 16 * edgeDensity;
+            return Math.max(8, Math.round(t / 8) * 8);
+        }
+
+        function decideCLAHEPhotoParams(gray, w, h) {
+            const edgeInfo = analyzeEdges(gray, w, h);
+            const noiseInfo = analyzeNoise(gray, w, h);
+
+            const baseClip = 0.03;
+
+            const edgeFactor = 1.0 - 0.3 * edgeInfo.edgeDensity;
+            const noiseFactor = 1.0 - 0.6 * noiseInfo.noiseNorm;
+
+            const clipLimit = Math.min(
+                0.04,
+                Math.max(0.005, baseClip * edgeFactor * noiseFactor)
+            );
+
+            const tileSize = chooseTileSize(edgeInfo.edgeDensity);
+
+            return {
+                tileSize,
+                clipLimit,
+                edgeDensity: edgeInfo.edgeDensity,
+                noiseLevel: noiseInfo.noiseNorm,
+                tags: [
+                    edgeInfo.tag,
+                    noiseInfo.tag
+                ]
+            };
+        }
+
+        function buildTileLUTs(gray, w, h, tileSize, clipLimit) {
+            const bins = 256;
+            const tilesX = Math.ceil(w / tileSize);
+            const tilesY = Math.ceil(h / tileSize);
+
+            const luts = Array.from({ length: tilesY }, () =>
+                Array.from({ length: tilesX }, () => new Uint8Array(bins))
+            );
+
+            for (let ty = 0; ty < tilesY; ty++) {
+                for (let tx = 0; tx < tilesX; tx++) {
+                    const hist = new Uint32Array(bins);
+
+                    const x0 = tx * tileSize;
+                    const y0 = ty * tileSize;
+                    const x1 = Math.min(x0 + tileSize, w);
+                    const y1 = Math.min(y0 + tileSize, h);
+
+                    for (let y = y0; y < y1; y++) {
+                        let row = y * w;
+                        for (let x = x0; x < x1; x++) {
+                            hist[gray[row + x]]++;
+                        }
+                    }
+
+                    const tileArea = (x1 - x0) * (y1 - y0);
+                    const maxPerBin = (clipLimit * tileArea) / bins;
+
+                    let excess = 0;
+                    for (let i = 0; i < bins; i++) {
+                        if (hist[i] > maxPerBin) {
+                            excess += hist[i] - maxPerBin;
+                            hist[i] = maxPerBin;
+                        }
+                    }
+
+                    const redist = excess / bins;
+                    for (let i = 0; i < bins; i++) {
+                        hist[i] += redist;
+                    }
+
+                    let acc = 0;
+                    const scale = 255 / tileArea;
+                    for (let i = 0; i < bins; i++) {
+                        acc += hist[i];
+                        luts[ty][tx][i] = Math.min(255, acc * scale);
+                    }
+                }
+            }
+
+            return { luts, tilesX, tilesY };
+        }
+
+        function claheGrayBilinear(gray, w, h, tileSize, luts, tilesX, tilesY) {
+            const out = new Uint8ClampedArray(gray.length);
+
+            for (let y = 0; y < h; y++) {
+                const ty = Math.floor(y / tileSize);
+                const fy = (y % tileSize) / tileSize;
+                const ty1 = Math.min(ty + 1, tilesY - 1);
+
+                for (let x = 0; x < w; x++) {
+                    const tx = Math.floor(x / tileSize);
+                    const fx = (x % tileSize) / tileSize;
+                    const tx1 = Math.min(tx + 1, tilesX - 1);
+
+                    const g = gray[y * w + x];
+
+                    const v_tl = luts[ty][tx][g];
+                    const v_tr = luts[ty][tx1][g];
+                    const v_bl = luts[ty1][tx][g];
+                    const v_br = luts[ty1][tx1][g];
+
+                    const w_tl = (1 - fx) * (1 - fy);
+                    const w_tr = fx * (1 - fy);
+                    const w_bl = (1 - fx) * fy;
+                    const w_br = fx * fy;
+
+                    out[y * w + x] =
+                        v_tl * w_tl +
+                        v_tr * w_tr +
+                        v_bl * w_bl +
+                        v_br * w_br;
+                }
+            }
+
+            return out;
+        }
+
+
+        function rgbToLab(r, g, b) {
+            // sRGB → linear
+            r /= 255; g /= 255; b /= 255;
+            r = r > 0.04045 ? Math.pow((r + 0.055) / 1.055, 2.4) : r / 12.92;
+            g = g > 0.04045 ? Math.pow((g + 0.055) / 1.055, 2.4) : g / 12.92;
+            b = b > 0.04045 ? Math.pow((b + 0.055) / 1.055, 2.4) : b / 12.92;
+
+            // linear RGB → XYZ (D65)
+            const x = (r * 0.4124 + g * 0.3576 + b * 0.1805) / 0.95047;
+            const y = (r * 0.2126 + g * 0.7152 + b * 0.0722) / 1.00000;
+            const z = (r * 0.0193 + g * 0.1192 + b * 0.9505) / 1.08883;
+
+            const fx = x > 0.008856 ? Math.cbrt(x) : (7.787 * x) + 16 / 116;
+            const fy = y > 0.008856 ? Math.cbrt(y) : (7.787 * y) + 16 / 116;
+            const fz = z > 0.008856 ? Math.cbrt(z) : (7.787 * z) + 16 / 116;
+
+            return {
+                L: (116 * fy) - 16,
+                A: 500 * (fx - fy),
+                B: 200 * (fy - fz)
+            };
+        }
+
+        function labToRgb(L, A, B) {
+            let fy = (L + 16) / 116;
+            let fx = fy + A / 500;
+            let fz = fy - B / 200;
+
+            let x = fx ** 3 > 0.008856 ? fx ** 3 : (fx - 16 / 116) / 7.787;
+            let y = L > (903.3 * 0.008856) ? ((fy ** 3)) : L / 903.3;
+            let z = fz ** 3 > 0.008856 ? fz ** 3 : (fz - 16 / 116) / 7.787;
+
+            x *= 0.95047;
+            z *= 1.08883;
+
+            // XYZ → linear RGB
+            let r = x * 3.2406 + y * -1.5372 + z * -0.4986;
+            let g = x * -0.9689 + y * 1.8758 + z * 0.0415;
+            let b = x * 0.0557 + y * -0.2040 + z * 1.0570;
+
+            // linear → sRGB
+            r = r > 0.0031308 ? 1.055 * Math.pow(r, 1 / 2.4) - 0.055 : 12.92 * r;
+            g = g > 0.0031308 ? 1.055 * Math.pow(g, 1 / 2.4) - 0.055 : 12.92 * g;
+            b = b > 0.0031308 ? 1.055 * Math.pow(b, 1 / 2.4) - 0.055 : 12.92 * b;
+
+            return {
+                r: Math.min(255, Math.max(0, r * 255)),
+                g: Math.min(255, Math.max(0, g * 255)),
+                b: Math.min(255, Math.max(0, b * 255))
+            };
+        }
+
+        function blendLuminance(originalL, enhancedL, alpha) {
+            const out = new Uint8Array(originalL.length);
+            for (let i = 0; i < originalL.length; i++) {
+                out[i] = Math.round(
+                    originalL[i] * (1 - alpha) +
+                    enhancedL[i] * alpha
+                );
+            }
+            return out;
+        }
+
+        function labToRgbSafe(L, A, B) {
+            let a = A, b = B;
+            let rgb;
+
+            for (let i = 0; i < 4; i++) {
+                rgb = labToRgb(L, a, b);
+
+                if (
+                    rgb.r >= 0 && rgb.r <= 255 &&
+                    rgb.g >= 0 && rgb.g <= 255 &&
+                    rgb.b >= 0 && rgb.b <= 255
+                ) {
+                    return rgb;
+                }
+
+                // reduce chroma
+                a *= 0.85;
+                b *= 0.85;
+            }
+
+            // final clamp fallback
+            return {
+                r: Math.min(255, Math.max(0, rgb.r)),
+                g: Math.min(255, Math.max(0, rgb.g)),
+                b: Math.min(255, Math.max(0, rgb.b))
+            };
+        }
+
+
+        function applyCLAHEPhotoColor(imgData, width, height) {
+            calPerformance.start();
+            const data = imgData.data;
+            const size = width * height;
+
+            const L = new Uint8Array(size);
+            const A = new Float32Array(size);
+            const B = new Float32Array(size);
+
+            // RGB → LAB (extract L)
+            for (let i = 0, p = 0; i < data.length; i += 4, p++) {
+                const lab = rgbToLab(data[i], data[i + 1], data[i + 2]);
+                L[p] = Math.round((lab.L / 100) * 255);
+                A[p] = lab.A;
+                B[p] = lab.B;
+            }
+
+            // Decide CLAHE params
+            const params = decideCLAHEPhotoParams(L, width, height);
+
+            const alpha = computeCLAHEAlpha(
+                params.edgeDensity,
+                params.noiseLevel
+            );
+
+            params.tags.push(alpha < 0.6 ? 'clahe-softened' : 'clahe-strong',
+                'gamut-protected');
+
+            // CLAHE
+            const { luts, tilesX, tilesY } =
+                buildTileLUTs(L, width, height, params.tileSize, params.clipLimit);
+
+            const Leq = claheGrayBilinear(
+                L,
+                width,
+                height,
+                params.tileSize,
+                luts,
+                tilesX,
+                tilesY
+            );
+
+            const Lfinal = blendLuminance(L, Leq, alpha);
+
+            // LAB → RGB (safe)
+            for (let i = 0, p = 0; i < data.length; i += 4, p++) {
+                const labL = (Lfinal[p] / 255) * 100;
+                const rgb = labToRgbSafe(labL, A[p], B[p]);
+
+                data[i] = rgb.r;
+                data[i + 1] = rgb.g;
+                data[i + 2] = rgb.b;
+                data[i + 3] = 255;
+            }
+            calPerformance.stop();
+            return {
+                imageData: imgData,
+                meta: {
+                    mode: 'photo-color',
+                    tileSize: params.tileSize,
+                    edgeDensity: params.edgeDensity,
+                    tags: params.tags
+                }
+            };
+        }
+
+        function handleImage(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = ({ target }) => {
+                const img = new Image();
+                img.onload = () => {
+                    const rootDivId = createGroup(
+                        `${file.name.toLowerCase()}-${new Date().getTime()}`
+                    )
+                    const button = document
+                        .getElementById(rootDivId)
+                        .querySelector('button');
+                    showCase(rootDivId, img.src, 'Original Image');
+                    button.addEventListener('click', (e) => {
+                        const canvas = drawImgOnCanvas(img);
+                        const ctx = canvas.getContext('2d');
+                        const imgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+                        const newData = applyCLAHEPhotoColor(imgData, canvas.width, canvas.height);
+                        console.log('CLAHE meta:', newData.meta);
+                        ctx.putImageData(newData.imageData, 0, 0);
+                        showCase(rootDivId, canvas.toDataURL(), 'PACE');
+                    });
+                };
+                img.src = target.result;
+                // img.src = e.target.result
+            };
+            reader.readAsDataURL(file);
+        }
+        fileInput.addEventListener('change', handleImage);
+    </script>
+</body>
+
+</html>
