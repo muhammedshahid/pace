@@ -7,17 +7,23 @@
     <title>PACE-Algorithm</title>
 
     <style>
+        html {
+            font-size: 100%;
+            /* or 90%, 112.5%, etc */
+        }
+
         body {
             font-family: Arial, sans-serif;
             background: #111;
             color: white;
             text-align: center;
-            padding: 20px;
+            padding: 1.25rem;
+            font-size: 1rem;
         }
 
         h1 {
-            font-size: 20px;
-            margin-bottom: 20px;
+            font-size: 1.25rem;
+            margin-bottom: 1.25rem;
         }
 
         input {
@@ -28,11 +34,11 @@
         #comparison-wrapper {
             position: relative;
             display: inline-block;
-            margin-top: 20px;
+            margin-top: 1.25rem;
             max-width: 90%;
             overflow: hidden;
-            border-radius: 10px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            border-radius: 0.625rem;
+            box-shadow: 0 0.625rem 1.875rem rgba(0, 0, 0, 0.5);
         }
 
         canvas {
@@ -53,58 +59,89 @@
             top: 0;
             bottom: 0;
             left: 50%;
-            width: 3px;
+            width: 0.1875rem;
             background: #00ffff;
             cursor: ew-resize;
-        }
-
-        #slider {
             touch-action: none;
         }
 
+        /* Add ripple animation */
+        @keyframes sliderRipple {
+            0% {
+                transform: translateY(-50%) scale(1);
+                opacity: 0.6;
+            }
+
+            70% {
+                transform: translateY(-50%) scale(1.8);
+                opacity: 0;
+            }
+
+            100% {
+                transform: translateY(-50%) scale(1.8);
+                opacity: 0;
+            }
+        }
 
         #slider::before {
             content: "";
             position: absolute;
             top: 50%;
-            left: -8px;
-            width: 20px;
-            height: 20px;
+            left: -0.7em;
+            width: 1.75em;
+            height: 1.75em;
             background: #00ffff;
             border-radius: 50%;
             transform: translateY(-50%);
+            z-index: 2;
+        }
+
+        /* Add ripple layer */
+        #slider::after {
+            content: "";
+            position: absolute;
+            top: 50%;
+            left: -0.7em;
+            width: 1.75em;
+            height: 1.75em;
+            background: #00ffff;
+            border-radius: 50%;
+            transform: translateY(-50%);
+            animation: sliderRipple 1.5s infinite;
+            z-index: 1;
         }
 
         .label {
             position: absolute;
-            top: 10px;
-            font-size: 14px;
+            top: 0.625rem;
+            font-size: 0.875rem;
             background: rgba(0, 0, 0, 0.6);
-            padding: 5px 10px;
-            border-radius: 5px;
+            padding: 0.3125rem 0.625rem;
+            border-radius: 0.3125rem;
         }
 
         #label-original {
-            left: 10px;
+            left: 0.625rem;
         }
 
         #label-processed {
-            right: 10px;
+            right: 0.625rem;
         }
 
         .meta-box {
             position: absolute;
-            bottom: 15px;
+            bottom: 0.9375rem;
             left: 50%;
             transform: translateX(-50%);
             background: rgba(0, 0, 0, 0.65);
-            padding: 8px 16px;
-            font-size: 13px;
-            border-radius: 20px;
+            padding: 0.5rem 1rem;
+            font-size: 0.8125rem;
+            border-radius: 1.25rem;
 
             display: flex;
-            gap: 20px;
+            gap: 1.25rem;
             align-items: center;
+
             white-space: nowrap;
             max-width: 90%;
             overflow-x: auto;
@@ -115,8 +152,8 @@
             display: none;
         }
 
-        .font-12{
-            font-size: 12px;
+        .font-12 {
+            font-size: 0.75rem;
         }
     </style>
 </head>
@@ -124,7 +161,8 @@
 <body>
 
     <h1>PACE.js – Perceptual Adaptive Contrast Enhancement</h1>
-    <p class="font-12">Intelligently enhances contrast by adapting to image texture, edges, and noise — improving detail while avoiding over-amplification.</p>
+    <p class="font-12">Intelligently enhances contrast by adapting to image texture, edges, and noise — preserving
+        detail while avoiding over-amplification.</p>
 
     <input type="file" id="fileInput" accept="image/*" />
 
@@ -138,6 +176,8 @@
     </div>
 
     <script>
+
+        // ---------- Slider Logic ----------
         const slider = document.getElementById("slider");
         const processedCanvas = document.getElementById("processedCanvas");
         const wrapper = document.getElementById("comparison-wrapper");
@@ -594,5 +634,3 @@
 </body>
 
 </html>
-
-
