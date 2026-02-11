@@ -199,6 +199,69 @@
             display: none;
         }
 
+        .toast {
+            position: fixed;
+            bottom: 2em;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 0.8em 1.6em;
+            font-size: 0.9rem;
+            color: #fff;
+
+            background: rgba(0, 255, 255, 0.12);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(0, 255, 255, 0.4);
+            border-radius: 2em;
+
+            box-shadow: 0 0 1.2em rgba(0, 255, 255, 0.3);
+
+            opacity: 0;
+            pointer-events: none;
+            transition: all 0.3s ease;
+        }
+
+        .toast.show {
+            opacity: 1;
+            bottom: 3em;
+        }
+
+        .global-processing {
+            position: fixed;
+            inset: 0;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            background: rgba(0, 0, 0, 0.35);
+            backdrop-filter: blur(4px);
+
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.25s ease;
+            z-index: 9999;
+        }
+
+        .global-processing.active {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .global-spinner {
+            width: 2.8em;
+            height: 2.8em;
+            border: 0.25em solid rgba(0, 255, 255, 0.2);
+            border-top: 0.25em solid #00ffff;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
         .font-12 {
             font-size: 0.75rem;
         }
@@ -223,9 +286,53 @@
         <div id="label-original" class="label">Original</div>
         <div id="label-processed" class="label">PACE.js</div>
         <div id="meta-info" class="meta-box"></div>
+
+        <div class="processing-overlay" id="processingOverlay">
+            <div class="processing-spinner"></div>
+        </div>
+
     </div>
 
+    <div class="global-processing" id="globalProcessing">
+        <div class="global-spinner"></div>
+    </div>
+
+
     <script>
+        // ---------- Loader Logic ----------
+        function showProcessing() {
+            document.getElementById("globalProcessing").classList.add("active");
+        }
+
+        function hideProcessing() {
+            document.getElementById("globalProcessing").classList.remove("active");
+        }
+
+
+        // ---------- Toast Logic ----------
+        function notifyComplete() {
+            // Vibrate (works on supported mobile devices)
+            if (navigator.vibrate) {
+                navigator.vibrate([120, 60, 120]); // short pattern
+            }
+
+            // showToast("Processing Complete ✅");
+            showToast("Boom! All done 🔥");
+        }
+
+        function showToast(message) {
+            let toast = document.createElement("div");
+            toast.className = "toast";
+            toast.textContent = message;
+            document.body.appendChild(toast);
+
+            requestAnimationFrame(() => toast.classList.add("show"));
+
+            setTimeout(() => {
+                toast.classList.remove("show");
+                setTimeout(() => toast.remove(), 300);
+            }, 2500);
+        }
 
         // ---------- Slider Logic ----------
         const slider = document.getElementById("slider");
@@ -642,12 +749,11 @@
         function handleImage(e) {
             const file = e.target.files[0];
             if (!file) return;
-
+            showProcessing();
             const reader = new FileReader();
             reader.onload = ({ target }) => {
                 const img = new Image();
                 img.onload = () => {
-
                     wrapper.style.display = "inline-block";
 
                     originalCanvas.width = processedCanvasEl.width = img.width;
@@ -673,6 +779,8 @@
                     <span><strong>Edge:</strong> ${result.meta.edgeDensity.toFixed(3)}</span>
                     <span><strong>Tags:</strong> ${result.meta.tags.join(" | ")}</span>
                     `;
+                    hideProcessing();
+                    notifyComplete();
 
                 };
                 img.src = target.result;
