@@ -54,6 +54,53 @@
             clip-path: inset(0 50% 0 0);
         }
 
+        input[type="file"] {
+            display: none;
+        }
+
+        .custom-upload {
+            display: block;
+            margin: 0 auto 1.2em;
+            width: fit-content;
+            padding: 0.6em 1.6em;
+            font-size: 0.95rem;
+            font-weight: 500;
+            color: #ffffff;
+            cursor: pointer;
+
+            background: rgba(255, 255, 255, 0.06);
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+
+            border: 1px solid rgba(0, 255, 255, 0.25);
+            border-radius: 2em;
+
+            box-shadow:
+                0 0.5em 1.5em rgba(0, 0, 0, 0.5),
+                0 0 1em rgba(0, 255, 255, 0.15),
+                /* subtle cyan glow */
+                inset 0 0 0.6em rgba(255, 255, 255, 0.05);
+
+            transition: all 0.25s ease;
+        }
+
+        .custom-upload:hover {
+            background: rgba(0, 255, 255, 0.08);
+            border: 1px solid rgba(0, 255, 255, 0.5);
+
+            box-shadow:
+                0 0.8em 2em rgba(0, 0, 0, 0.6),
+                0 0 1.6em rgba(0, 255, 255, 0.35),
+                inset 0 0 0.8em rgba(255, 255, 255, 0.08);
+
+            transform: translateY(-0.08em);
+        }
+
+        .custom-upload:active {
+            transform: scale(0.97);
+        }
+
+
         #slider {
             position: absolute;
             top: 0;
@@ -161,10 +208,13 @@
 <body>
 
     <h1>PACE.js – Perceptual Adaptive Contrast Enhancement</h1>
-    <p class="font-12">Intelligently enhances contrast by adapting to image texture, edges, and noise — preserving
-        detail while avoiding over-amplification.</p>
+    <p class="font-12">
+        Intelligently enhances contrast by adapting to image texture, edges, and noise — preserving detail while
+        avoiding over-amplification.
+    </p>
 
-    <input type="file" id="fileInput" accept="image/*" />
+    <label for="fileInput" class="custom-upload">Choose Image</label>
+    <input type="file" id="fileInput" accept="image/*">
 
     <div id="comparison-wrapper" style="display:none;">
         <canvas id="originalCanvas"></canvas>
