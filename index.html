@@ -5,78 +5,169 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>PACE-Algorithm</title>
-    <style>
-        /* Gallery Styles */
-        /* #output-container {
-        display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-        gap: 20px;
-        padding: 20px;
-      } */
 
-        div.root-gallery {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-            gap: 20px;
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #111;
+            color: white;
+            text-align: center;
             padding: 20px;
         }
 
-        .image-container {
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            overflow: hidden;
-            text-align: center;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        h1 {
+            font-size: 20px;
+            margin-bottom: 20px;
         }
 
-        .image-title {
-            font-size: 16px;
-            font-weight: bold;
-            padding: 10px;
-            background-color: #f8f8f8;
-            color: #333;
-            border-bottom: 1px solid #ddd;
-        }
-
-        .resized-image {
-            width: 100%;
-            /* Full width of the container */
-            height: auto;
-            /* Maintain aspect ratio */
+        input {
+            margin: 0 auto;
             display: block;
         }
 
-        /* Canvas Styles */
-        #canvas {
-            border: 1px solid #000;
+        #comparison-wrapper {
+            position: relative;
+            display: inline-block;
             margin-top: 20px;
+            max-width: 90%;
+            overflow: hidden;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        }
+
+        canvas {
+            display: block;
             max-width: 100%;
             height: auto;
         }
 
-        body {
-            font-family: Arial, sans-serif;
-            padding: 20px;
+        #processedCanvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            clip-path: inset(0 50% 0 0);
         }
 
-        button {
-            margin-top: 10px;
-            padding: 10px 20px;
-            font-size: 16px;
+        #slider {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            left: 50%;
+            width: 3px;
+            background: #00ffff;
+            cursor: ew-resize;
+        }
+
+        #slider {
+            touch-action: none;
+        }
+
+
+        #slider::before {
+            content: "";
+            position: absolute;
+            top: 50%;
+            left: -8px;
+            width: 20px;
+            height: 20px;
+            background: #00ffff;
+            border-radius: 50%;
+            transform: translateY(-50%);
+        }
+
+        .label {
+            position: absolute;
+            top: 10px;
+            font-size: 14px;
+            background: rgba(0, 0, 0, 0.6);
+            padding: 5px 10px;
+            border-radius: 5px;
+        }
+
+        #label-original {
+            left: 10px;
+        }
+
+        #label-processed {
+            right: 10px;
+        }
+
+        .meta-box {
+            position: absolute;
+            bottom: 15px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.65);
+            padding: 8px 16px;
+            font-size: 13px;
+            border-radius: 20px;
+
+            display: flex;
+            gap: 20px;
+            align-items: center;
+            white-space: nowrap;
+            max-width: 90%;
+            overflow-x: auto;
+            scrollbar-width: none;
+        }
+
+        .meta-box::-webkit-scrollbar {
+            display: none;
         }
     </style>
 </head>
 
 <body>
-    <h1>PACE: Perceptual Adaptive Contrast Enhancement Algorithm for Web-Based Image Processing</h1>
+
+    <h1>PACE.js – Perceptual Adaptive Contrast Enhancement</h1>
+
     <input type="file" id="fileInput" accept="image/*" />
-    <div id="output-container"></div>
+
+    <div id="comparison-wrapper" style="display:none;">
+        <canvas id="originalCanvas"></canvas>
+        <canvas id="processedCanvas"></canvas>
+        <div id="slider"></div>
+        <div id="label-original" class="label">Original</div>
+        <div id="label-processed" class="label">PACE.js</div>
+        <div id="meta-info" class="meta-box"></div>
+    </div>
 
     <script>
-        const fileInput = document.querySelector('#fileInput');
-        // const imageLoader = document.getElementById('imageLoader');
-        // const canvas = document.getElementById('imageCanvas');
-        // const ctx = canvas.getContext('2d');
+        const slider = document.getElementById("slider");
+        const processedCanvas = document.getElementById("processedCanvas");
+        const wrapper = document.getElementById("comparison-wrapper");
+
+        let isDragging = false;
+
+        slider.addEventListener("pointerdown", (e) => {
+            isDragging = true;
+            slider.setPointerCapture(e.pointerId);
+        });
+
+        window.addEventListener("pointerup", () => {
+            isDragging = false;
+        });
+
+        window.addEventListener("pointermove", (e) => {
+            if (!isDragging) return;
+
+            const rect = wrapper.getBoundingClientRect();
+            let offset = e.clientX - rect.left;
+            offset = Math.max(0, Math.min(offset, rect.width));
+
+            const percent = (offset / rect.width) * 100;
+
+            slider.style.left = percent + "%";
+            processedCanvas.style.clipPath = `inset(0 ${100 - percent}% 0 0)`;
+        });
+
+
+        // ---------- File Handling ----------
+        const fileInput = document.getElementById("fileInput");
+        const originalCanvas = document.getElementById("originalCanvas");
+        const processedCanvasEl = document.getElementById("processedCanvas");
+
+        fileInput.addEventListener("change", handleImage);
 
         const calPerformance = {
             canStart: true,
@@ -89,57 +180,10 @@
                 if (this.canStart) return;
                 this.endTime = performance.now();
                 this.canStart = true;
-                const duration = (this.endTime - this.startTime) / 1000;
-                console.log(`Total processing time: ${duration.toFixed(2)} sec`);
+                this.duration = ((this.endTime - this.startTime) / 1000).toFixed(3);
+                console.log(`Total processing time: ${this.duration} sec`);
             }
         }
-
-        /* ---------- helpers ---------- */
-
-        function createGroup(id) {
-            const rootDiv = document.createElement('div')
-            rootDiv.id = `root-${id}`
-            rootDiv.innerHTML = `<button>Equalize</button><div class='root-gallery'></div>`
-            document.querySelector('#output-container').appendChild(rootDiv)
-            return rootDiv.id
-        }
-
-        function showCase(rootDivId, dataURL, titleText) {
-            // Create a container div to hold the title and image
-            const container = document.createElement('div');
-            container.classList.add('image-container');
-
-            // Create a title element
-            const title = document.createElement('div');
-            title.classList.add('image-title');
-            title.textContent = titleText
-
-            // Create an image element
-            const img = document.createElement('img');
-            img.src = dataURL;
-            img.alt = 'Image';
-            img.classList.add('resized-image');
-
-            // Append the title and image to the container
-            container.appendChild(title);
-            container.appendChild(img);
-
-            // Append the container to the output area
-            const rootDiv = document.getElementById(rootDivId);
-            rootDiv.querySelector('.root-gallery').appendChild(container);
-        }
-
-        function drawImgOnCanvas(img) {
-            const canvas = document.createElement('canvas')
-            // use simple height & width for faster raster
-            canvas.width = img.width //naturalWidth
-            canvas.height = img.height //naturalHeight
-            const ctx = canvas.getContext('2d')
-            ctx.drawImage(img, 0, 0, canvas.width, canvas.height)
-            return canvas
-        }
-
-
 
         function analyzeEdges(gray, w, h) {
             let sum = 0;
@@ -508,30 +552,40 @@
             reader.onload = ({ target }) => {
                 const img = new Image();
                 img.onload = () => {
-                    const rootDivId = createGroup(
-                        `${file.name.toLowerCase()}-${new Date().getTime()}`
-                    )
-                    const button = document
-                        .getElementById(rootDivId)
-                        .querySelector('button');
-                    showCase(rootDivId, img.src, 'Original Image');
-                    button.addEventListener('click', (e) => {
-                        const canvas = drawImgOnCanvas(img);
-                        const ctx = canvas.getContext('2d');
-                        const imgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-                        const newData = applyCLAHEPhotoColor(imgData, canvas.width, canvas.height);
-                        console.log('CLAHE meta:', newData.meta);
-                        ctx.putImageData(newData.imageData, 0, 0);
-                        showCase(rootDivId, canvas.toDataURL(), 'PACE');
-                    });
+
+                    wrapper.style.display = "inline-block";
+
+                    originalCanvas.width = processedCanvasEl.width = img.width;
+                    originalCanvas.height = processedCanvasEl.height = img.height;
+
+                    const ctxOriginal = originalCanvas.getContext("2d");
+                    const ctxProcessed = processedCanvasEl.getContext("2d");
+
+                    ctxOriginal.drawImage(img, 0, 0);
+                    ctxProcessed.drawImage(img, 0, 0);
+
+                    const imgData = ctxProcessed.getImageData(0, 0, img.width, img.height);
+                    const result = applyCLAHEPhotoColor(imgData, img.width, img.height);
+                    ctxProcessed.putImageData(result.imageData, 0, 0);
+
+                    slider.style.left = "50%";
+                    processedCanvasEl.style.clipPath = "inset(0 50% 0 0)";
+                    const metaBox = document.getElementById("meta-info");
+
+                    metaBox.innerHTML = `
+                    <span><strong>Time:</strong> ${calPerformance.duration}sec</span>
+                    <span><strong>Tile:</strong> ${result.meta.tileSize}</span>
+                    <span><strong>Edge:</strong> ${result.meta.edgeDensity.toFixed(3)}</span>
+                    <span><strong>Tags:</strong> ${result.meta.tags.join(" | ")}</span>
+                    `;
+
                 };
                 img.src = target.result;
-                // img.src = e.target.result
             };
             reader.readAsDataURL(file);
         }
-        fileInput.addEventListener('change', handleImage);
     </script>
+
 </body>
 
 </html>
