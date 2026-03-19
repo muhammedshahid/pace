@@ -8,7 +8,7 @@
 
 ### 🎯 Try it instantly
 - **No installation** • **No Python** • **Runs 100% in your browser**
-- Upload any image and see real-time enhancement in **under 50 ms** (tested on phones too)
+- Upload any image and see real-time enhancement in **under some ms** (tested on phones too)
 
 **Live Demo**: [https://muhammedshahid.github.io/pace/](https://muhammedshahid.github.io/pace/)
 
@@ -90,9 +90,9 @@ PACE achieves the **best balance** across all metrics:
 ### Citation
 
 ```bibtex
-@misc{shahid2025pace,
+@misc{shahid2026pace,
   author = {Mohd. Shahid},
   title = {Perceptual Adaptive Contrast Enhancement (PACE): A Structure-Preserving Approach for Image Enhancement and Analysis},
-  year = {2025},
+  year = {2026},
   url = {https://github.com/muhammedshahid/pace}
 }
