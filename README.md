@@ -83,7 +83,7 @@ PACE achieves the **best balance** across all metrics:
 **Author**: Mohd. Shahid (Independent Researcher, Delhi, India)  
 **Email**: smuhammed621@gmail.com
 
-**Paper PDF** (coming soon on arXiv — link will be updated here)
+**Paper PDF** https://github.com/muhammedshahid/pace-research-paper
 
 ---
 
@@ -94,5 +94,5 @@ PACE achieves the **best balance** across all metrics:
   author = {Mohd. Shahid},
   title = {Perceptual Adaptive Contrast Enhancement (PACE): A Structure-Preserving Approach for Image Enhancement and Analysis},
   year = {2026},
-  url = {https://github.com/muhammedshahid/pace}
+  url = {https://github.com/muhammedshahid/pace-research-paper}
 }
