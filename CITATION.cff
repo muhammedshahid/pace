@@ -1,0 +1,29 @@
+cff-version: 1.2.0
+message: "If you use PACE in your research or project, please cite it as below."
+title: PACE - Perceptual Adaptive Contrast Enhancement
+abstract: A perception-aware image enhancement framework that improves visibility while preserving structural fidelity and natural color balance. Implemented in pure JavaScript with support for CLI and browser (real-time demo). Operates in perceptually uniform Oklab color space with adaptive multi-signal blending.
+authors:
+  - given-names: Mohd
+    family-names: Shahid
+    affiliation: "Independent Researcher"
+version: "1.0.0"
+date-released: "2026-03-24"
+license: MIT
+repository-code: "https://github.com/muhammedshahid/pace"
+url: "https://github.com/muhammedshahid/pace"
+type: software
+keywords:
+  - image-enhancement
+  - perceptual-color-modeling
+  - oklab
+  - structure-preserving
+  - adaptive-contrast
+  - clahe
+  - retinex
+  - javascript
+  - browser
+  - cli-tool
+identifiers:
+  - type: url
+    value: "https://github.com/muhammedshahid/pace-research-paper"
+    description: Research paper repository
