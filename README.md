@@ -29,6 +29,25 @@ Result: **clearer images without over-enhancement, color distortion, or noise am
 
 ---
 
+## 🧠 Method Overview
+
+<figure align="center">
+  <img src="./src/imgs/pipeline.png" width="800"/>
+  <figcaption>Architecture of the proposed Perceptual Adaptive Contrast Enhancement (PACE) framework. The method operates in OKLab space and processes the luminance channel using two complementary streams: a global statistics-driven controller that determines adaptive enhancement parameters, and a local perceptual stream that generates spatial masks. Multiple enhancement signals, including CLAHE-based contrast adjustment, Retinex-inspired detail enhancement, and Laplacian texture amplification, are fused through a perceptual blending and nonlinear stability model to produce the final enhanced image.
+  </figcaption>
+</figure>
+
+PACE pipeline:
+
+1. RGB → Oklab conversion  
+2. Global feature extraction  
+3. Adaptive parameter computation  
+4. CLAHE-based enhancement  
+5. Perceptual blending  
+6. Reconstruction  
+
+---
+
 ## 🔥 Features
 
 - Perceptual-aware enhancement (not blind contrast stretching)
@@ -274,19 +293,6 @@ Tests ensure:
 - valid output ranges
 - deterministic behavior
 - config correctness
-
----
-
-## 🧠 Method Overview
-
-PACE pipeline:
-
-1. RGB → Oklab conversion  
-2. Global feature extraction  
-3. Adaptive parameter computation  
-4. CLAHE-based enhancement  
-5. Perceptual blending  
-6. Reconstruction  
 
 ---
 
