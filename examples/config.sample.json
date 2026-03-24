@@ -1,0 +1,13 @@
+{
+  "strength": 0.85,
+  "override": {
+    "controlParams": {
+      "tileSize": 8,
+      "clipLimit": 2.0,
+      "globalAlpha": 0.7
+    },
+    "perceptualParams": {
+      "tau": 0.5
+    }
+  }
+}

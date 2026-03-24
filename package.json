@@ -1,0 +1,46 @@
+{
+  "name": "pace",
+  "version": "1.0.0",
+  "description": "Perceptual Adaptive Contrast Enhancement (PACE): A fully adaptive image enhancement framework for improving visual quality while preserving structural fidelity.",
+  "type": "module",
+  "main": "src/pace.js",
+  "exports": {
+    ".": "./src/pace.js"
+  },
+  "bin": {
+    "pace": "./cli/index.js"
+  },
+  "scripts": {
+    "start": "node cli/index.js",
+    "test": "node --test",
+    "example": "node examples/basic.js"
+  },
+  "keywords": [
+    "image-processing",
+    "image-enhancement",
+    "contrast-enhancement",
+    "clahe",
+    "low-light",
+    "computer-vision",
+    "image-quality",
+    "oklab",
+    "perceptual",
+    "javascript"
+  ],
+  "author": "Mohd. Shahid",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/muhammedshahid/pace"
+  },
+  "bugs": {
+    "url": "https://github.com/muhammedshahid/pace/issues"
+  },
+  "homepage": "https://github.com/muhammedshahid/pace#readme",
+  "dependencies": {
+    "sharp": "^0.33.0"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}
