@@ -13,8 +13,6 @@
 
 ---
 
----
-
 ## 🚀 Overview
 
 **PACE (Perceptual Adaptive Contrast Enhancement)** is a perception-driven image enhancement framework designed to address the limitations of conventional techniques such as Histogram Equalization (HE), CLAHE, MSRCR, and LIME.
@@ -136,9 +134,8 @@ PACE supports reproducible experiments via JSON config:
   }
 }
 ```
----
 
-## Reproducibility Note
+### Reproducibility Note
 
 This repository provides the full JavaScript implementation of PACE.
 
@@ -150,9 +147,6 @@ However, comparison results and methodology are documented in:
 
 - Research paper: [![Research Paper](https://img.shields.io/badge/Paper-PDF-red)](https://docs.google.com/viewer?url=https://github.com/muhammedshahid/pace-research-paper/raw/main/paper/
 
----
-
----
 
 ### 🔹 Control Parameters
 
@@ -169,7 +163,6 @@ However, comparison results and methodology are documented in:
   It regulates the overall strength of enhancement.
   Higher values → stronger enhancement.
 
----
 
 ### 🔹 Perceptual Parameters
 
@@ -187,7 +180,6 @@ However, comparison results and methodology are documented in:
   Regulates edge enhancement stability based on noise level
   Higher noise → stronger stabilization → reduced artifacts near edges.
 
----
 
 ### 🧠 Interpretation
 
@@ -198,7 +190,6 @@ Unless overridden, all parameters are **automatically estimated from global imag
 
 ---
 
----
 
 ## 📊 Experimental Results
 
