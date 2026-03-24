@@ -337,6 +337,24 @@
                 max-height: 85%;
             }
         }
+
+        .drop-zone-container {
+            border: 2px dashed rgba(0, 255, 255, 0.2);
+            border-radius: 1.25rem;
+            padding: 2rem;
+            margin: 1.25rem auto;
+            max-width: 400px;
+            transition: all 0.3s ease;
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        /* State when a file is being dragged over the zone */
+        .drop-zone-container.drag-over {
+            background: rgba(0, 255, 255, 0.05);
+            border-color: #00ffff;
+            box-shadow: 0 0 20px rgba(0, 255, 255, 0.2);
+            transform: scale(1.02);
+        }
     </style>
 </head>
 
@@ -353,8 +371,13 @@
         <img src="./imgs/fig-1.png" alt="">
     </div>
 
-    <label for="fileInput" class="custom-upload">Choose Image</label>
-    <input type="file" id="fileInput" accept="image/*">
+    <!-- <label for="fileInput" class="custom-upload">Choose Image</label>
+    <input type="file" id="fileInput" accept="image/*"> -->
+    <div id="drop-zone" class="drop-zone-container">
+        <label for="fileInput" class="custom-upload">Choose Image or Drag & Drop</label>
+        <input type="file" id="fileInput" accept="image/*">
+        <p class="font-12" style="margin-top: -0.5rem; opacity: 0.6;">Supports: JPG, PNG, WebP</p>
+    </div>
 
     <div id="comparison-wrapper" style="display:none;">
         <canvas id="originalCanvas"></canvas>
@@ -400,7 +423,6 @@
         function hideProcessing() {
             document.getElementById("globalProcessing").classList.remove("active");
         }
-
 
         // ---------- Toast Logic ----------
         function notifyComplete() {
@@ -461,8 +483,7 @@
         const fileInput = document.getElementById("fileInput");
         const originalCanvas = document.getElementById("originalCanvas");
         const processedCanvasEl = document.getElementById("processedCanvas");
-
-        fileInput.addEventListener("change", handleImage);
+        const dropZone = document.getElementById("drop-zone");
 
         const calPerformance = {
             canStart: true,
@@ -479,53 +500,7 @@
                 console.log(`Total processing time: ${this.duration} sec`);
             }
         }
-
-        function handleImage(e) {
-            const file = e.target.files[0];
-            if (!file) return;
-            showProcessing();
-            const reader = new FileReader();
-            reader.onload = ({ target }) => {
-                const img = new Image();
-                img.onload = async () => {
-                    // showProcessing();
-                    // await new Promise(resolve => requestAnimationFrame(resolve));
-                    wrapper.style.display = "inline-block";
-
-                    originalCanvas.width = processedCanvasEl.width = img.width;
-                    originalCanvas.height = processedCanvasEl.height = img.height;
-
-                    const ctxOriginal = originalCanvas.getContext("2d");
-                    const ctxProcessed = processedCanvasEl.getContext("2d");
-
-                    ctxOriginal.drawImage(img, 0, 0);
-                    ctxProcessed.drawImage(img, 0, 0);
-
-                    const imgData = ctxProcessed.getImageData(0, 0, img.width, img.height);
-                    calPerformance.start();
-                    const result = await applyPACE(imgData, { debug: false }, (info) => {
-                        // console.log(info);
-                    });
-                    calPerformance.stop();
-                    // console.log(result);
-                    ctxProcessed.putImageData(result, 0, 0);
-
-                    slider.style.left = "50%";
-                    processedCanvasEl.style.clipPath = "inset(0 50% 0 0)";
-                    const metaBox = document.getElementById("meta-info");
-
-                    metaBox.innerHTML = `
-                    <span><strong>Time:</strong> ${calPerformance.duration}sec</span>
-                   
-                    `;
-                    hideProcessing();
-                    notifyComplete();
-
-                };
-                img.src = target.result;
-            };
-            reader.readAsDataURL(file);
-        }
+        
         document.getElementById('downloadBtn').addEventListener('click', function () {
             const now = new Date();
             const timestamp = now.getFullYear() + '-' +
@@ -542,6 +517,84 @@
 
             link.click();
         });
+
+        // 1. Prevent default drag behaviors for the whole window
+        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+            window.addEventListener(eventName, e => e.preventDefault(), false);
+            window.addEventListener(eventName, e => e.stopPropagation(), false);
+        });
+
+        // 2. Visual feedback for the drop zone
+        ['dragenter', 'dragover'].forEach(eventName => {
+            dropZone.addEventListener(eventName, () => dropZone.classList.add('drag-over'), false);
+        });
+
+        ['dragleave', 'drop'].forEach(eventName => {
+            dropZone.addEventListener(eventName, () => dropZone.classList.remove('drag-over'), false);
+        });
+
+        // 3. Handle dropped files
+        dropZone.addEventListener('drop', (e) => {
+            const dt = e.dataTransfer;
+            const file = dt.files[0];
+            if (file && file.type.startsWith('image/')) {
+                processFile(file);
+            }
+        });
+
+        // 4. Handle input-selected files
+        fileInput.addEventListener("change", (e) => {
+            const file = e.target.files[0];
+            if (file) processFile(file);
+        });
+
+        // 5. Consolidated processing logic
+        function processFile(file) {
+            showProcessing();
+            const reader = new FileReader();
+            reader.onload = ({ target }) => {
+                const img = new Image();
+                img.onload = async () => {
+                    const wrapper = document.getElementById("comparison-wrapper");
+                    wrapper.style.display = "inline-block";
+
+                    const originalCanvas = document.getElementById("originalCanvas");
+                    const processedCanvasEl = document.getElementById("processedCanvas");
+
+                    originalCanvas.width = processedCanvasEl.width = img.width;
+                    originalCanvas.height = processedCanvasEl.height = img.height;
+
+                    const ctxOriginal = originalCanvas.getContext("2d");
+                    const ctxProcessed = processedCanvasEl.getContext("2d");
+
+                    ctxOriginal.drawImage(img, 0, 0);
+                    ctxProcessed.drawImage(img, 0, 0);
+
+                    const imgData = ctxProcessed.getImageData(0, 0, img.width, img.height);
+
+                    calPerformance.start();
+                    // Applying the PACE framework processing
+                    const result = await applyPACE(imgData, { debug: false });
+                    calPerformance.stop();
+
+                    ctxProcessed.putImageData(result, 0, 0);
+
+                    // Reset UI elements
+                    const slider = document.getElementById("slider");
+                    slider.style.left = "50%";
+                    processedCanvasEl.style.clipPath = "inset(0 50% 0 0)";
+
+                    document.getElementById("meta-info").innerHTML = `
+                    <span><strong>Time:</strong> ${calPerformance.duration}sec</span>
+                    `;
+
+                    hideProcessing();
+                    notifyComplete();
+                };
+                img.src = target.result;
+            };
+            reader.readAsDataURL(file);
+        }
     </script>
 
 </body>
