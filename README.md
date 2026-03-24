@@ -145,7 +145,7 @@ were implemented using Python-based libraries.
 Due to cross-language differences, only PACE is included here.
 However, comparison results and methodology are documented in:
 
-- Research paper: [![Research Paper](https://img.shields.io/badge/Paper-PDF-red)](https://docs.google.com/viewer?url=https://github.com/muhammedshahid/pace-research-paper/raw/main/paper/
+- Research paper: [![Research Paper](https://img.shields.io/badge/Paper-PDF-red)](https://docs.google.com/viewer?url=https://github.com/muhammedshahid/pace-research-paper/raw/main/paper/)
 
 
 ### 🔹 Control Parameters
