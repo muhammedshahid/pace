@@ -173,6 +173,38 @@
 
         #label-processed {
             right: 0.625rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            /* Space between text and icon */
+            padding: 4px 12px;
+            /* Adjust padding to fit the icon */
+        }
+
+        #downloadBtn {
+            background: transparent;
+            border: none;
+            color: inherit;
+            /* Inherits the label's text color */
+            cursor: pointer;
+            padding: 0;
+            display: flex;
+            align-items: center;
+            opacity: 0.6;
+            transition: opacity 0.2s ease, transform 0.2s ease;
+        }
+
+        #downloadBtn:hover {
+            opacity: 1;
+            transform: translateY(1px);
+            /* Subtle click-like movement */
+        }
+
+        #downloadBtn svg {
+            width: 16px;
+            /* Scaled down to match font size */
+            height: 16px;
         }
 
         .meta-box {
@@ -327,9 +359,20 @@
     <div id="comparison-wrapper" style="display:none;">
         <canvas id="originalCanvas"></canvas>
         <canvas id="processedCanvas"></canvas>
+
         <div id="slider"></div>
         <div id="label-original" class="label">Original</div>
-        <div id="label-processed" class="label">PACE.js</div>
+        <div id="label-processed" class="label">
+            PACE.js
+            <button id="downloadBtn" title="Download Processed Image">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <path d="M12 16v-8"></path>
+                    <path d="m8 12 4 4 4-4"></path>
+                </svg>
+            </button>
+        </div>
         <div id="meta-info" class="meta-box"></div>
 
         <div class="processing-overlay" id="processingOverlay">
@@ -460,7 +503,7 @@
 
                     const imgData = ctxProcessed.getImageData(0, 0, img.width, img.height);
                     calPerformance.start();
-                    const result = await applyPACE(imgData, { debug: true }, (info) => {
+                    const result = await applyPACE(imgData, { debug: false }, (info) => {
                         // console.log(info);
                     });
                     calPerformance.stop();
@@ -483,6 +526,22 @@
             };
             reader.readAsDataURL(file);
         }
+        document.getElementById('downloadBtn').addEventListener('click', function () {
+            const now = new Date();
+            const timestamp = now.getFullYear() + '-' +
+                String(now.getDate() + 1).padStart(2, '0') + '-' +
+                String(now.getMonth()).padStart(2, '0') + '_' +
+                String(now.getHours()).padStart(2, '0') + '-' +
+                String(now.getMinutes()).padStart(2, '0') + '-' +
+                String(now.getSeconds()).padStart(2, '0');
+            const canvas = document.getElementById('processedCanvas');
+
+            const link = document.createElement('a');
+            link.download = `PACE-enhanced-image${timestamp}.png`;
+            link.href = canvas.toDataURL('image/png');
+
+            link.click();
+        });
     </script>
 
 </body>
