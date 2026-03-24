@@ -35,7 +35,7 @@ Result: **clearer images without over-enhancement, color distortion, or noise am
   <img src="./src/imgs/arch.png" width="800"/>
 </p>
 
-<p align="center">
+<p align="left">
   <b>Figure:</b> Overview of the proposed <i>Perceptual Adaptive Contrast Enhancement (PACE)</i> framework. The method operates in the OKLab color space and focuses on luminance-guided enhancement through two complementary pathways: (1) a global statistics-driven controller that adaptively estimates enhancement parameters, and (2) a local perceptual stream that generates spatially varying masks. Multiple enhancement cues—comprising CLAHE-based contrast modulation, Retinex-inspired illumination correction, and Laplacian-based texture amplification—are integrated via a perceptually guided blending strategy coupled with a nonlinear stability mechanism, yielding a structurally consistent and visually natural enhanced image.
 </p>
 
