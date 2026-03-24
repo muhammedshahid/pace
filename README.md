@@ -367,10 +367,14 @@ pace/
 ## 📖 Citation
 
 ```bibtex
-@article{pace2026,
-  title={PACE: Perceptual Adaptive Contrast Enhancement},
-  author={Muhammed Shahid},
-  year={2026}
+@software{pace2026,
+  author = {Shahid, Mohd},
+  title = {PACE: Perceptual Adaptive Contrast Enhancement},
+  year = {2026},
+  version = {2.0.0},
+  publisher = {Zenodo},
+  doi = {10.5281/zenodo.19203394},
+  url = {https://doi.org/10.5281/zenodo.19203394}
 }
 ```
 
