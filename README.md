@@ -253,9 +253,8 @@ PACE is designed to **balance perceptual quality with structural fidelity**, res
 
 PACE also works in the browser.
 
-Open:
-
-[`src/index.html`](./src/index.html)
+### 🚀 Live Demo
+👉 **[Launch Interactive Demo →](./src/index.html)**
 
 Features:
 
