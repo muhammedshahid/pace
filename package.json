@@ -3,9 +3,9 @@
   "version": "1.0.0",
   "description": "Perceptual Adaptive Contrast Enhancement (PACE): A fully adaptive image enhancement framework for improving visual quality while preserving structural fidelity.",
   "type": "module",
-  "main": "src/pace.js",
+  "main": "src/PACE.js",
   "exports": {
-    ".": "./src/pace.js"
+    ".": "./src/PACE.js"
   },
   "bin": {
     "pace": "./cli/index.js"
