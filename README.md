@@ -76,6 +76,11 @@ PACE pipeline:
 
 ![comaprison 1](examples/comparison/t3.png)
 
+> Figure 2: Chest X-ray (medical imaging). PACE delivers the most balanced and clinically useful enhancement. Lung vasculature, rib structures, and soft tissues appear sharply defined with excellent local contrast. In contrast, CLAHE and HE aggressively boost contrast, resulting in slight haloing and unnatural brightness around the mediastinum and heart region. LIME tends to darken portions of the image excessively, while MSRCR washes out fine structural details. PACE avoids these limitations and provides the highest diagnostic clarity.
+
+For more detailed visual comparisons, see  
+👉 [`examples/comparison`](./examples/comparison)
+
 ---
 
 ## 📦 Installation
@@ -250,9 +255,7 @@ PACE also works in the browser.
 
 Open:
 
-```
-src/index.html
-```
+[`src/index.html`](./src/index.html)
 
 Features:
 
