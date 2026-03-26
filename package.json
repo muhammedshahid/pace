@@ -13,6 +13,7 @@
   "scripts": {
     "start": "node cli/index.js",
     "test": "node --test",
+    "build": "esbuild src/index.js --bundle --minify --outfile=dist/pace.min.js --format=iife --global-name=PACE",
     "example": "node examples/basic.js"
   },
   "keywords": [
