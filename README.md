@@ -64,18 +64,17 @@ PACE pipeline:
 
 ## 📸 Visual Results
 
-### Before vs After
+### Quick Demo (Input vs PACE)
 
 <p align="center">
   <img src="./examples/output/comparison1.png" width="800"/>
 </p>
 
-> Comparison between Original and PACE-Enhanced Images.
+> Figure 1. Visual enhancement result on a real-world portrait captured under suboptimal illumination conditions. (Left) Input image captured under poor illumination. (Right) Output produced by the proposed PACE method. The enhancement improves visibility in facial regions and clothing while preserving natural color tones and avoiding over-enhancement artifacts such as haloing and noise amplification. The result demonstrates PACE’s ability to achieve perceptually balanced contrast without degrading structural details.
 
-Example:
+### Comparative Evaluation
 
-![Input](examples/input/sample.jpg)
-![Output](examples/output/basic.png)
+![comaprison 1](examples/comparison/t3.png)
 
 ---
 
