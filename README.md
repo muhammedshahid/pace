@@ -89,7 +89,7 @@ For more detailed visual comparisons, see
 PACE works in **browser (CDN)**, **ES Modules**, and **Node (CommonJS)**.
 
 ### 🚀 Try Live Demo
-👉 **[Open Demo](./src/index.html)**
+👉 **[Open Demo](https://muhammedshahid.github.io/pace/src/)**
 
 ---
 
@@ -216,19 +216,6 @@ PACE supports reproducible experiments via JSON config:
 }
 ```
 
-### Reproducibility Note
-
-This repository provides the full JavaScript implementation of PACE.
-
-Comparative methods (HE, CLAHE, MSRCR, LIME) used in the paper
-were implemented using Python-based libraries.
-
-Due to cross-language differences, only PACE is included here.
-However, comparison results and methodology are documented in:
-
-- Research paper: [![Research Paper](https://img.shields.io/badge/Paper-PDF-red)](https://docs.google.com/viewer?url=https://github.com/muhammedshahid/pace-research-paper/raw/main/paper/)
-
-
 ### 🔹 Control Parameters
 
 - **tileSize**  
@@ -248,8 +235,7 @@ However, comparison results and methodology are documented in:
 ### 🔹 Perceptual Parameters
 
 - **lambda (λ) — Stability Regulator**  
-  Controls nonlinear contrast compression based on **contrast strength and noise energy**.  
-  Prevents unstable amplification in high-noise or high-contrast regions.
+  Controls nonlinear contrast compression based on **contrast strength and noise energy**. Prevents unstable amplification in high-noise or high-contrast regions.
 
 - **beta (β) — Highlight Protection**  
   Modulates enhancement in bright regions based on **luminance distribution skewness and highlight dominance**, preventing saturation and detail loss.
@@ -271,6 +257,48 @@ Unless overridden, all parameters are **automatically estimated from global imag
 
 ---
 
+## 🔁 Reproducibility
+
+This repository provides:
+
+* ✅ Full JavaScript implementation of **PACE**
+* ✅ Scripts to reproduce **baseline comparisons** (HE, CLAHE, MSRCR, LIME)
+
+Baseline methods are implemented using Python and official implementations
+to ensure consistency with established literature.
+
+📁 See: [`/reproducibility`](./reproducibility)
+
+---
+
+### ⚙️ Methodology Notes
+
+* HE and CLAHE are applied on the **luminance channel in OKLab space**
+  for consistency with PACE
+* MSRCR follows a standard multi-scale Retinex formulation
+* LIME results are generated using the **official implementation** (unmodified)
+
+---
+
+### 📄 Research Paper
+
+Full methodology, comparisons, and results are documented in:
+
+[![Research Paper](https://img.shields.io/badge/Paper-PDF-red)](https://docs.google.com/viewer?url=https://github.com/muhammedshahid/pace-research-paper/raw/main/paper/Perceptual_Adaptive_Contrast_Enhancement_(PACE).pdf)
+
+---
+
+### 🔍 Reproducibility Guarantee
+
+All results reported in the paper can be reproduced using:
+
+* Provided JavaScript implementation (PACE)
+* Python scripts in `/reproducibility`
+* Fixed parameters and shared methodology
+
+No hidden steps or proprietary tools are used.
+
+---
 
 ## 📊 Experimental Results
 
@@ -302,21 +330,6 @@ Although no-reference metrics (NIQE, BRISQUE, PIQE) are widely used:
 > Objective perceptual metrics do not always align with human visual perception.
 
 PACE is designed to **balance perceptual quality with structural fidelity**, resulting in more stable visual outputs.
-
----
-
-## 🌐 Browser Usage
-
-PACE also works in the browser.
-
-### 🚀 Live Demo
-👉 **[Launch Interactive Demo →](./src/index.html)**
-
-Features:
-
-- drag & drop image
-- real-time enhancement
-- visual comparison
 
 ---
 
@@ -460,13 +473,18 @@ https://github.com/muhammedshahid/pace-research-paper
 
 ```
 pace/
-├── src/        # core algorithm + browser demo
-├── cli/        # command line interface
-├── examples/   # usage examples
-├── tests/      # test suite
-├── package.json
-├── README.md
-└── LICENSE
+├── src/                  # Core algorithm (PACE) + browser demo source
+├── dist/                 # Bundled builds (CDN, ESM, minified)
+├── cli/                  # Command-line interface implementation
+├── reproducibility/      # Scripts to reproduce baseline comparisons (HE, CLAHE, MSRCR, LIME)
+├── examples/             # Minimal usage examples (Node.js, browser)
+├── tests/                # Test suite (unit + functional validation)
+├── paper.md              # JOSS paper (submission manuscript)
+├── paper.bib             # Bibliography for paper.md
+├── CITATION.cff          # Citation metadata (GitHub / academic use)
+├── package.json          # Project metadata and dependencies
+├── README.md             # Project documentation
+└── LICENSE               # License information
 ```
 
 ---

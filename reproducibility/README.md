@@ -24,7 +24,7 @@ All methods are applied on the **same input dataset** to ensure comparability.
 ```
 reproducibility/
 ├── generate_baselines.py  # HE, CLAHE, MSRCR
-├── run_lime.sh            # Wrapper for LIME execution
+├── run_lime.py            # Wrapper for LIME execution
 ├── inputs/                # Input images
 ├── README.md              # This file
 ```
@@ -99,7 +99,7 @@ LIME results are generated using the original implementation:
 ### Run
 
 ```bash
-bash run_lime.sh
+python run_lime.py
 ```
 
 ### Command Used
