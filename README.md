@@ -146,13 +146,22 @@ npm install pace
 
 ## ⚡ Quick Start
 
-### Node.js
+### 📦 ES Modules (Bundler / Node.js)
 
 ```js
 import { applyPACE } from "pace";
 
 // imageData: ImageData object
 const output = await applyPACE(imageData, options);
+```
+
+OR
+
+```js
+import { PACE } from "pace";
+
+// imageData: ImageData object
+const output = await PACE.enhance(imageData, options);
 ```
 
 > 🔗 See [Options](#options) for available CLI parameters.
