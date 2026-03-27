@@ -1,14 +1,10 @@
 import { applyPACE } from "./PACE.js";
 
+// Unified API
 const PACE = {
-  enhance: applyPACE
+  enhance: applyPACE,
+  applyPACE
 };
 
-// ES module export (for Node / bundlers)
-export { applyPACE };
-export default PACE;
-
-// Browser global (for CDN usage)
-if (typeof window !== "undefined") {
-  window.PACE = PACE;
-}
+// ESM exports
+export { applyPACE, PACE };
