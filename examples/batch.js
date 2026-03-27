@@ -1,10 +1,16 @@
-import fs from "fs";
+import fs from "node:fs";
 import sharp from "sharp";
-import { applyPACE } from "../src/PACE.js";
+import { PACE } from "../dist/pace.esm.js";
 
+// ------------------------------
+// Polyfill ImageData for Node.js
+// ------------------------------
 if (typeof global.ImageData === "undefined") {
     global.ImageData = class {
         constructor(data, width, height) {
+            if (!(data instanceof Uint8ClampedArray)) {
+                throw new Error("ImageData expects Uint8ClampedArray");
+            }
             this.data = data;
             this.width = width;
             this.height = height;
@@ -35,7 +41,7 @@ const run = async () => {
             info.height
         );
 
-        const result = await applyPACE(imageData);
+        const result = await PACE.enhance(imageData);
 
         await sharp(Buffer.from(result.data), {
             raw: {

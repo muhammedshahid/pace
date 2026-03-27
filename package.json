@@ -3,18 +3,30 @@
   "version": "1.0.0",
   "description": "Perceptual Adaptive Contrast Enhancement (PACE): A fully adaptive image enhancement framework for improving visual quality while preserving structural fidelity.",
   "type": "module",
-  "main": "src/PACE.js",
+  "main": "dist/pace.cjs.js",
+  "module": "dist/pace.esm.js",
   "exports": {
-    ".": "./src/PACE.js"
+    ".": {
+      "require": "./dist/pace.cjs.js",
+      "import": "./dist/pace.esm.js",
+      "default": "./dist/pace.esm.js"
+    }
   },
   "bin": {
     "pace": "./cli/index.js"
   },
+  "devDependencies": {
+    "esbuild": "^0.27.4"
+  },
   "scripts": {
     "start": "node cli/index.js",
     "test": "node --test",
-    "build": "esbuild src/index.js --bundle --minify --outfile=dist/pace.min.js --format=iife --global-name=PACE",
-    "example": "node examples/basic.js"
+    "example": "node examples/basic.js",
+    "prepublishOnly": "npm run build",
+    "build": "npm run build:esm && npm run build:cjs && npm run build:cdn",
+    "build:esm": "esbuild src/index.js --bundle --format=esm --outfile=dist/pace.esm.js",
+    "build:cjs": "esbuild src/index.js --bundle --format=cjs --outfile=dist/pace.cjs.js",
+    "build:cdn": "esbuild src/index.js --bundle --minify --format=iife --global-name=PACE --outfile=dist/pace.min.js"
   },
   "keywords": [
     "image-processing",
@@ -26,7 +38,17 @@
     "image-quality",
     "oklab",
     "perceptual",
+    "npm",
+    "cli",
+    "image-processing-library",
     "javascript"
+  ],
+  "files": [
+    "dist",
+    "cli",
+    "src",
+    "README.md",
+    "LICENSE"
   ],
   "author": "Mohd. Shahid",
   "license": "MIT",
@@ -38,7 +60,7 @@
     "url": "https://github.com/muhammedshahid/pace/issues"
   },
   "homepage": "https://github.com/muhammedshahid/pace#readme",
-  "dependencies": {
+  "optionalDependencies": {
     "sharp": "^0.33.0"
   },
   "engines": {

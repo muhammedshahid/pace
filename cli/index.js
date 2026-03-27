@@ -1,13 +1,20 @@
 #!/usr/bin/env node
 
-import fs from "fs";
+import fs from "node:fs";
+import path from "node:path";
+import { performance } from "node:perf_hooks";
 import sharp from "sharp";
-import { applyPACE } from "../src/PACE.js";
+import { PACE } from "../dist/pace.esm.js";
 
+// ------------------------------
 // Polyfill ImageData for Node.js
+// ------------------------------
 if (typeof global.ImageData === "undefined") {
     global.ImageData = class {
         constructor(data, width, height) {
+            if (!(data instanceof Uint8ClampedArray)) {
+                throw new Error("ImageData expects Uint8ClampedArray");
+            }
             this.data = data;
             this.width = width;
             this.height = height;
@@ -15,14 +22,14 @@ if (typeof global.ImageData === "undefined") {
     };
 }
 
-// ----------------------
+// ------------
 // CLI Metadata
-// ----------------------
+// ------------
 const VERSION = "1.0.0";
 
-// ----------------------
+// -------
 // Helpers
-// ----------------------
+// -------
 const printHelp = () => {
     console.log(`
 PACE - Perceptual Adaptive Contrast Enhancement
@@ -31,9 +38,9 @@ Usage:
   pace <input> <output> [options]
 
 Options:
-  --debug             Enable detailed debug logs & export it in JSON
-  --strength <value>  Control enhancement strength (default: 1.0)
-  --config <file>     Load options from JSON config file (supports override params)
+  --debug             Enable detailed debug logs & export JSON
+  --strength <value>  Control enhancement strength (0–5, default: 1.0)
+  --config <file>     Load options from JSON config file
   --help              Show this help message
   --version           Show version
 
@@ -50,9 +57,9 @@ const exitWithError = (msg) => {
     process.exit(1);
 };
 
-// ----------------------
+// ---------------
 // Parse Arguments
-// ----------------------
+// ---------------
 const args = process.argv.slice(2);
 
 if (args.includes("--help") || args.length === 0) {
@@ -75,49 +82,82 @@ if (!inputPath || !outputPath) {
 // Flags
 const debug = args.includes("--debug");
 
-// config for advance user
-const configIndex = args.indexOf("--config");
+// ------
+// Config
+// ------
 let config = {};
+const configIndex = args.indexOf("--config");
 
 if (configIndex !== -1) {
     const configPath = args[configIndex + 1];
 
-    if (!configPath || !fs.existsSync(configPath)) {
-        exitWithError("Invalid config file");
+    if (!configPath) {
+        exitWithError("Missing value for --config");
+    }
+
+    if (!fs.existsSync(configPath)) {
+        exitWithError(`Config file not found: ${configPath}`);
     }
 
     try {
         config = JSON.parse(fs.readFileSync(configPath, "utf-8"));
-    } catch (e) {
+    } catch {
         exitWithError("Failed to parse config JSON");
     }
 }
 
+// --------
 // Strength
+// --------
 let strength = 1.0;
 const strengthIndex = args.indexOf("--strength");
 
 if (strengthIndex !== -1) {
-    const value = parseFloat(args[strengthIndex + 1]);
+    const valueRaw = args[strengthIndex + 1];
+
+    if (!valueRaw) {
+        exitWithError("Missing value for --strength");
+    }
+
+    const value = parseFloat(valueRaw);
+
     if (isNaN(value)) {
         exitWithError("Invalid value for --strength");
     }
+
+    if (value <= 0 || value > 5) {
+        exitWithError("Strength must be between 0 and 5");
+    }
+
     strength = value;
 }
 
+// --------------
 // Validate input
+// --------------
 if (!fs.existsSync(inputPath)) {
     exitWithError(`Input file not found: ${inputPath}`);
 }
 
-// ----------------------
+// Ensure output directory exists
+const outputDir = path.dirname(outputPath);
+if (!fs.existsSync(outputDir)) {
+    fs.mkdirSync(outputDir, { recursive: true });
+}
+
+// --------------
 // Main Execution
-// ----------------------
+// --------------
 (async () => {
     try {
         console.log("🚀 PACE processing started...");
         console.log(`📥 Input: ${inputPath}`);
         console.log(`📤 Output: ${outputPath}`);
+        // console.log(`🧠 Strength: ${strength}`);
+
+        if (configIndex !== -1) {
+            console.log(`⚙️  Config: ${args[configIndex + 1]}`);
+        }
 
         const t0 = performance.now();
 
@@ -133,16 +173,15 @@ if (!fs.existsSync(inputPath)) {
             info.height
         );
 
+        // CLI overrides config
         const options = {
             debug,
             strength,
             ...config
         };
+
         // Run PACE
-        const result = await applyPACE(
-            imageData,
-            options
-        );
+        const result = await PACE.enhance(imageData, options);
 
         // Save output
         await sharp(Buffer.from(result.data), {
@@ -153,15 +192,10 @@ if (!fs.existsSync(inputPath)) {
             }
         }).toFile(outputPath);
 
-        // Trigger debug export
-        if (debug) {
-            await import("../src/utils/debug.js").then(m => m.log(payload = { end: true }));
-        }
-
         const t1 = performance.now();
 
         console.log("✅ Done");
-        console.log(`⏱️ Time: ${(t1 - t0).toFixed(2)} ms`);
+        console.log(`⏱️  Time: ${(t1 - t0).toFixed(2)} ms`);
 
         if (debug) console.log("🧪 Debug mode enabled");
 

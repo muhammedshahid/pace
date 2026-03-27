@@ -1,11 +1,16 @@
 import test from "node:test";
 import assert from "node:assert";
-import { applyPACE } from "../src/PACE.js";
+import { PACE } from "../dist/pace.esm.js";
 
-// Polyfill
+// ------------------------------
+// Polyfill ImageData for Node.js
+// ------------------------------
 if (typeof global.ImageData === "undefined") {
     global.ImageData = class {
         constructor(data, width, height) {
+            if (!(data instanceof Uint8ClampedArray)) {
+                throw new Error("ImageData expects Uint8ClampedArray");
+            }
             this.data = data;
             this.width = width;
             this.height = height;
@@ -21,7 +26,7 @@ test("PACE runs and returns valid ImageData", async () => {
 
     const input = new ImageData(data, width, height);
 
-    const output = await applyPACE(input);
+    const output = await PACE.enhance(input);
 
     assert.ok(output);
     assert.strictEqual(output.width, width);
