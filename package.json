@@ -7,6 +7,7 @@
   "module": "dist/pace.esm.js",
   "exports": {
     ".": {
+      "types": "./dist/index.d.ts",
       "require": "./dist/pace.cjs.js",
       "import": "./dist/pace.esm.js",
       "default": "./dist/pace.esm.js"
@@ -22,11 +23,15 @@
     "start": "node cli/index.js",
     "test": "node --test",
     "example": "node examples/basic.js",
-    "prepublishOnly": "npm run build",
+    "lint": "eslint src cli examples tests",
+    "lint:fix": "eslint src cli examples tests --fix",
     "build": "npm run build:esm && npm run build:cjs && npm run build:cdn",
-    "build:esm": "esbuild src/index.js --bundle --format=esm --outfile=dist/pace.esm.js",
-    "build:cjs": "esbuild src/index.js --bundle --format=cjs --outfile=dist/pace.cjs.js",
-    "build:cdn": "esbuild src/index.js --bundle --minify --format=iife --global-name=PACE --outfile=dist/pace.min.js"
+    "build:esm": "esbuild src/index.js --bundle --format=esm --sourcemap --outfile=dist/pace.esm.js",
+    "build:cjs": "esbuild src/index.js --bundle --format=cjs --platform=node --outfile=dist/pace.cjs.js",
+    "build:cdn": "esbuild src/index.js --bundle --minify --format=iife --global-name=PACE --outfile=dist/pace.min.js",
+    "build:watch": "npm run build -- --watch",
+    "clean": "rm -rf dist",
+    "prepare": "npm run build"
   },
   "keywords": [
     "image-processing",
