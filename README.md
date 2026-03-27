@@ -10,6 +10,7 @@
 [![Live Demo](https://img.shields.io/badge/Demo-Live-green)](https://muhammedshahid.github.io/pace/src)
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.19203395.svg)](https://doi.org/10.5281/zenodo.19203395)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+![CI](https://github.com/muhammedshahid/pace/actions/workflows/ci.yml/badge.svg)
 
 ---
 
