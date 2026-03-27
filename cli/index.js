@@ -5,6 +5,7 @@ import path from "node:path";
 import { performance } from "node:perf_hooks";
 import sharp from "sharp";
 import { PACE } from "../dist/pace.esm.js";
+import { version } from "../package.json" assert { type: "json" };
 
 // ------------------------------
 // Polyfill ImageData for Node.js
@@ -21,11 +22,6 @@ if (typeof global.ImageData === "undefined") {
         }
     };
 }
-
-// ------------
-// CLI Metadata
-// ------------
-const VERSION = "1.0.0";
 
 // -------
 // Helpers
@@ -68,7 +64,7 @@ if (args.includes("--help") || args.length === 0) {
 }
 
 if (args.includes("--version")) {
-    console.log(`PACE v${VERSION}`);
+    console.log(`PACE v${version}`);
     process.exit(0);
 }
 
