@@ -68,7 +68,7 @@ PACE pipeline:
 ### Quick Demo (Input vs PACE)
 
 <p align="center">
-  <img src="./examples/output/comparison1.png" width="800"/>
+  <img src="./src/imgs/t0_direct.png" width="800"/>
 </p>
 
 > Figure 2: Visual enhancement result on a real-world portrait captured under suboptimal illumination conditions. (Left) Input image captured under poor illumination. (Right) Output produced by the proposed PACE method. The enhancement improves visibility in facial regions and clothing while preserving natural color tones and avoiding over-enhancement artifacts such as haloing and noise amplification. The result demonstrates PACE’s ability to achieve perceptually balanced contrast without degrading structural details.
@@ -254,6 +254,21 @@ PACE supports reproducible experiments via JSON config:
 - **Perceptual parameters** enforce **visual consistency and stability constraints**
 
 Unless overridden, all parameters are **automatically estimated from global image statistics**, enabling adaptive and data-driven enhancement.
+
+---
+
+## 👀 Strength Parameter Demonstration
+
+![PACE Strength param demo](./src/imgs/pace_strength_param.png)
+
+**Figure.** Visual comparison of PACE processing on a coastal satellite scene.
+**Left:** Input (original image).
+**Center:** *PACE AUTO* — output generated without manual parameter tuning.
+**Right:** *PACE (strength = 2)* — enhanced output with increased detail refinement.
+
+The progression highlights PACE’s ability to perform **automatic, content-aware enhancement**, while also allowing **controlled amplification of contrast and fine details** through the strength parameter.
+
+> 💡 PACE AUTO operates without manual tuning, making it suitable for fully automated pipelines.
 
 ---
 
