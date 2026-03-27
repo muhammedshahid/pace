@@ -48,15 +48,18 @@ PACE pipeline:
 
 ---
 
-## 🔥 Features
+## ✨ Features
 
-- Perceptual-aware enhancement (not blind contrast stretching)
-- Preserves edges, textures, and structural details
-- Adaptive control using global image statistics
-- Minimal color distortion (Oklab-based processing)
-- Works in **Browser** and **Node.js**
-- CLI tool for batch processing
-- Debug pipeline with JSON export (for research)
+- 🎯 Perceptual-aware enhancement (not blind contrast stretching)
+- ⚖️ Preserves edges, textures, structural details along with balanced contrast control
+- 🧠 Adaptive control using image statistics (no manual tuning required)
+- ❔ Optional configurable parameters for fine-grained control
+- 🌈 No color distortion (Oklab-based processing)
+- 🧩 Multi-signal fusion (CLAHE, Retinex-inspired, Laplacian)
+- 🛡 Artifact suppression & structure preservation
+- ⚡ Fast JavaScript implementation (Browser + Node.js + CLI)
+- 💻 CLI tool for batch processing
+- 🔬 Debug pipeline with JSON export (research-friendly)
 
 ---
 
@@ -81,6 +84,41 @@ For more detailed visual comparisons, see
 
 ---
 
+## 🌐 Browser Usage (No Installation)
+
+PACE works in **browser (CDN)**, **ES Modules**, and **Node (CommonJS)**.
+
+### 🚀 Try Live Demo
+👉 **[Open Demo](./src/index.html)**
+
+---
+
+### 🌐 1. Browser (CDN / Global Script)
+
+```html
+<script src="https://cdn.jsdelivr.net/gh/muhammedshahid/pace/dist/pace.min.js"></script>
+```
+
+```js
+const enhanced = PACE.enhance(imageData, options);
+```
+
+### 📦 2. ES Modules (Native Browser)
+
+```html
+<script type="module"> 
+  import { PACE, applyPACE } from "https://cdn.jsdelivr.net/gh/muhammedshahid/pace/dist/pace.esm.js"; 
+  const output = await applyPACE(imageData, options); 
+  <!-- 
+    const output = await PACE.enhance(imageData, options);
+  -->
+  </script>
+```
+
+> 🔗 See [Options](#options) for available parameters.
+
+---
+
 ## 📦 Installation
 
 ### Install globally (CLI)
@@ -95,6 +133,15 @@ npm install -g pace
 npm install pace
 ```
 
+> ⚠️ **Note:** Ensure the project is built before installation.
+> If the `/dist` directory is empty, run:
+>
+> ```bash
+> npm run build
+> ```
+>
+> This requires `esbuild` (version `^0.27.4`) as a dependency.
+
 ---
 
 ## ⚡ Quick Start
@@ -105,8 +152,10 @@ npm install pace
 import { applyPACE } from "pace";
 
 // imageData: ImageData object
-const output = await applyPACE(imageData);
+const output = await applyPACE(imageData, options);
 ```
+
+> 🔗 See [Options](#options) for available CLI parameters.
 
 ---
 
