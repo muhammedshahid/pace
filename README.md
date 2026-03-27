@@ -386,7 +386,6 @@ PACE is designed to address key limitations of traditional and modern image enha
 - **LIME (Low-Light Image Enhancement via Illumination Map Estimation)**  
   Illumination estimation-based enhancement, effective but prone to artifacts.
 
----
 
 ### ⚖️ Qualitative Comparison
 
@@ -400,7 +399,56 @@ PACE is designed to address key limitations of traditional and modern image enha
 
 ---
 
-### 🧠 Key Advantages of PACE
+## ⚙️ Computational Complexity
+
+The total computational cost of PACE can be expressed as:
+
+[
+T_{\text{PACE}}(N) = T_{\text{features}}(N) + T_{\text{CLAHE}}(N) + T_{\text{signals}}(N) + T_{\text{blend}}(N)
+]
+
+Each component scales linearly with the number of pixels ( N ). Therefore, the overall complexity is:
+
+[
+T_{\text{PACE}}(N) = \mathcal{O}(N)
+]
+
+This implies that computational cost increases **linearly with image resolution**.
+
+---
+
+## 🚀 Practical Efficiency
+
+PACE is designed for **efficient real-world deployment**, with the following properties:
+
+* ⚡ **Linear time complexity** → scalable to high-resolution images
+* 🧩 **Local operations** → fixed-size neighbourhood processing
+* 🔁 **No iterative optimization** → predictable runtime
+* 🧠 **No learning-based components** → low overhead
+
+---
+
+## 🖥️ Parallelization
+
+The algorithm is highly parallelizable and can be efficiently accelerated using:
+
+* **GPU acceleration**
+* **SIMD vectorization**
+* **Multi-threading** (e.g., Web Workers in browser environments)
+
+---
+
+## 📌 Implications
+
+These characteristics make PACE suitable for:
+
+* Real-time image enhancement
+* High-resolution image processing pipelines
+* Integration into modern **image processing** and **computer vision** systems
+
+---
+
+## 🧠 Key Advantages of PACE
 
 - **Perceptual Awareness**  
   Unlike HE/CLAHE, PACE incorporates perceptual parameters (λ, β, τ) to regulate enhancement.
@@ -422,12 +470,11 @@ PACE is designed to address key limitations of traditional and modern image enha
   Combines:
   - histogram-based enhancement  
   - perceptual modeling  
-  - adaptive blending  
-  into a single pipeline
+  - adaptive blending into a single pipeline
 
 ---
 
-### 📈 Empirical Observations
+## 📈 Empirical Observations
 
 Visual comparisons indicate that:
 
@@ -441,7 +488,7 @@ Visual comparisons indicate that:
 
 ---
 
-### 🧪 Summary
+## 🧪 Summary
 
 PACE bridges the gap between **classical enhancement methods** and **perceptually-driven approaches** by introducing:
 
