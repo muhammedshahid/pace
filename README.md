@@ -538,6 +538,7 @@ pace/
 ├── eslint.config.js      # Modern flat ESLint config
 ├── .github/workflows     # GitHub Actions CI (test + build + lint)
 ├── .gitignore
+├── CHANGELOG.md
 ├── README.md             # Project documentation
 └── LICENSE               # License information
 ```
