@@ -2,10 +2,19 @@
 
 import fs from "node:fs";
 import path from "node:path";
+import { fileURLToPath } from "url";
 import { performance } from "node:perf_hooks";
 import sharp from "sharp";
 import { PACE } from "../dist/pace.esm.js";
-import { version } from "../package.json" assert { type: "json" };
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+const pkg = JSON.parse(
+  fs.readFileSync(join(__dirname, "../package.json"), "utf-8")
+);
+
+const version = pkg.version;
 
 // ------------------------------
 // Polyfill ImageData for Node.js

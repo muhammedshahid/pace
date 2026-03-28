@@ -67,7 +67,7 @@ function computeGradient(L, width, height) {
 /* Edge + Structure + Skin in single traversal */
 /* -------------------------------------------------- */
 
-function computeMaps(L, gx, gy, width, height) {
+function computeMaps(L, gx, gy) {
 
     const n = L.length;
 
