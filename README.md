@@ -8,7 +8,7 @@
 [![Research Paper](https://img.shields.io/badge/Paper-PDF-red)](https://docs.google.com/viewer?url=https://github.com/muhammedshahid/pace-research-paper/raw/main/paper/Perceptual_Adaptive_Contrast_Enhancement_(PACE).pdf)
 [![Code](https://img.shields.io/badge/Code-GitHub-black)](https://github.com/muhammedshahid/pace)
 [![Live Demo](https://img.shields.io/badge/Demo-Live-green)](https://muhammedshahid.github.io/pace/src)
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.19203395.svg)](https://doi.org/10.5281/zenodo.19203395)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.19203394.svg)](https://doi.org/10.5281/zenodo.19203394)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 ![CI](https://github.com/muhammedshahid/pace/actions/workflows/ci.yml/badge.svg)
 
