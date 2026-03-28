@@ -419,7 +419,7 @@ PACE is designed to address key limitations of traditional and modern image enha
 
 The total computational cost of PACE can be expressed as:
 
-T_PACE(N) = T_features(N) + T_textCLAHE(N) + T_signals(N) + T_blend(N)
+T_PACE(N) = T_features(N) + T_CLAHE(N) + T_signals(N) + T_blend(N)
 
 Each component scales linearly with the number of pixels (N). Therefore, the overall complexity is:
 
