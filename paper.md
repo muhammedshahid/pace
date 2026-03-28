@@ -1,29 +1,32 @@
 ---
-
 title: "PACE: Perceptual Adaptive Contrast Enhancement"
+
 tags:
+  - image processing
+  - contrast enhancement
+  - computer vision
+  - perceptual color space
+  - OKLab
 
-* image processing
-* contrast enhancement
-* computer vision
-* perceptual color space
-* OKLab
-  authors:
-* name: Muhammed Shahid
-  affiliation: 1
-  affiliations:
-* name: Independent Researcher
-  index: 1
-  date: 2026-01-01
-  bibliography: paper.bib
+authors:
+  - name: Mohd. Shahid
+    affiliation: 1
 
+affiliations:
+  - name: Independent Researcher
+    index: 1
+
+date: 2026-03-28
+bibliography: paper.bib
 ---
 
 # Summary
 
-Perceptual Adaptive Contrast Enhancement (PACE) is a structure-preserving image enhancement algorithm designed to improve visual quality while maintaining perceptual and structural fidelity. Unlike conventional contrast enhancement techniques such as Histogram Equalization (HE) and Contrast Limited Adaptive Histogram Equalization (CLAHE), as well as Retinex-based and LIME approaches, PACE operates in the OKLab perceptual color space and employs adaptive multi-signal blending to mitigate artifacts such as halo effects, over-enhancement, and color distortion.
+Perceptual Adaptive Contrast Enhancement (PACE) is a structure-preserving image enhancement algorithm designed to improve visual quality while maintaining perceptual and structural fidelity. Unlike conventional contrast enhancement techniques such as Histogram Equalization (HE) and Contrast Limited Adaptive Histogram Equalization (CLAHE) [@pizer1987adaptive], as well as Retinex-based [@land1977retinex] and LIME [@guo2016lime] approaches, PACE operates in the OKLab perceptual color space and employs adaptive multi-signal blending to mitigate artifacts such as halo effects, over-enhancement, and color distortion.
 
 The method is particularly suitable for applications in computer vision and image analysis pipelines, where both visibility enhancement and preservation of structural information are critical.
+
+The software is implemented in JavaScript and is available as an open-source package with both programmatic and command-line interfaces.
 
 # Statement of Need
 
@@ -37,13 +40,17 @@ PACE provides a complete JavaScript implementation of a perceptually guided cont
 
 Key features include:
 
-* Perceptual image processing using OKLab color representation
-* Adaptive contrast enhancement with structure preservation
-* Configurable parameters for fine-grained control
-* Command-line interface (CLI) for batch processing
-* Support for integration into image processing and machine learning workflows
+* Perceptually guided image enhancement using the OKLab color space
+* Adaptive contrast enhancement with explicit structure and edge preservation
+* Multi-signal fusion combining CLAHE-based, Retinex-inspired, and gradient-based (Laplacian) cues
+* Automatic parameter adaptation based on image statistics (no manual tuning required)
+* Optional configurable parameters for fine-grained control
+* Artifact suppression to mitigate halo effects, over-enhancement, and noise amplification
+* Efficient JavaScript implementation compatible with both browser and Node.js environments
+* Command-line interface (CLI) for batch processing and reproducible workflows
+* Integration support for image processing and machine learning pipelines
 
-The repository also includes benchmark visual comparisons and quantitative evaluation against established enhancement methods.
+The repository includes visual comparisons and example evaluations against established enhancement methods.
 
 # Acknowledgements
 
