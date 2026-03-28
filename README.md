@@ -97,7 +97,7 @@ PACE works in **browser (CDN)**, **ES Modules**, and **Node (CommonJS)**.
 ### 🌐 1. Browser (CDN / Global Script)
 
 ```html
-<script src="https://cdn.jsdelivr.net/gh/muhammedshahid/pace/dist/pace.min.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/muhammedshahid/pace@main/dist/pace.min.js"></script>
 ```
 
 ```js
@@ -108,7 +108,7 @@ const enhanced = PACE.enhance(imageData, options);
 
 ```html
 <script type="module"> 
-  import { PACE, applyPACE } from "https://cdn.jsdelivr.net/gh/muhammedshahid/pace/dist/pace.esm.js"; 
+  import { PACE, applyPACE } from "https://cdn.jsdelivr.net/gh/muhammedshahid/pace@main/dist/pace.esm.js";
   const output = await applyPACE(imageData, options); 
   <!-- 
     const output = await PACE.enhance(imageData, options);
@@ -411,7 +411,7 @@ PACE is designed to address key limitations of traditional and modern image enha
 | **CLAHE**| Local contrast improvement | Noise amplification, lacks global coherence |
 | **MSRCR**| Illumination correction | Color distortion, halo artifacts |
 | **LIME** | Good low-light visibility | Washed-out appearance, chroma inconsistency |
-| **PACE (Proposed)** | Adaptive, perceptually guided, structure-preserving | Slightly higher computational cost |
+| **PACE (Proposed)** | Adaptive, perceptually guided, structure-preserving | No learning capability |
 
 ---
 
@@ -419,15 +419,11 @@ PACE is designed to address key limitations of traditional and modern image enha
 
 The total computational cost of PACE can be expressed as:
 
-[
-T_{\text{PACE}}(N) = T_{\text{features}}(N) + T_{\text{CLAHE}}(N) + T_{\text{signals}}(N) + T_{\text{blend}}(N)
-]
+T_PACE(N) = T_features(N) + T_textCLAHE(N) + T_signals(N) + T_blend(N)
 
-Each component scales linearly with the number of pixels ( N ). Therefore, the overall complexity is:
+Each component scales linearly with the number of pixels (N). Therefore, the overall complexity is:
 
-[
-T_{\text{PACE}}(N) = \mathcal{O}(N)
-]
+T_PACE(N) = O(N)
 
 This implies that computational cost increases **linearly with image resolution**.
 
@@ -514,14 +510,6 @@ This enables it to function not only as an enhancement algorithm but also as a *
 
 ---
 
-## 📄 Research Paper
-
-Full research details available here:
-
-https://github.com/muhammedshahid/pace-research-paper
-
----
-
 ## 🎯 Applications
 
 - General-purpose image enhancement  
@@ -546,6 +534,10 @@ pace/
 ├── paper.bib             # Bibliography for paper.md
 ├── CITATION.cff          # Citation metadata (GitHub / academic use)
 ├── package.json          # Project metadata and dependencies
+├── package-lock.json     # Dependency lockfile (reproducible installs)
+├── eslint.config.js      # Modern flat ESLint config
+├── .github/workflows     # GitHub Actions CI (test + build + lint)
+├── .gitignore
 ├── README.md             # Project documentation
 └── LICENSE               # License information
 ```
