@@ -411,7 +411,7 @@ PACE is designed to address key limitations of traditional and modern image enha
 | **CLAHE**| Local contrast improvement | Noise amplification, lacks global coherence |
 | **MSRCR**| Illumination correction | Color distortion, halo artifacts |
 | **LIME** | Good low-light visibility | Washed-out appearance, chroma inconsistency |
-| **PACE (Proposed)** | Adaptive, perceptually guided, structure-preserving | No learning capability |
+| **PACE (Proposed)** | Adaptive, perceptually guided, structure-preserving | O(N) runtime; high-resolution images (e.g., 8K) may incur higher latency and memory usage in browser environments (parallelization via Web Workers/GPU planned) |
 
 ---
 
@@ -426,6 +426,30 @@ Each component scales linearly with the number of pixels (N). Therefore, the ove
 T_PACE(N) = O(N)
 
 This implies that computational cost increases **linearly with image resolution**.
+
+---
+
+## ⚠️ Limitations
+
+- **Linear Complexity (O(N))**
+  PACE operates with linear time complexity with respect to the number of pixels, meaning processing time scales proportionally with image resolution.
+
+- **High-Resolution Performance**
+  While efficient for typical consumer images (e.g., HD, 4K), very high-resolution inputs (e.g., 8K images or large scientific datasets) may result in increased processing time and memory usage, particularly in browser environments.
+
+- **Single-threaded Execution (Current Implementation)**
+  The current implementation primarily relies on single-threaded execution, which can limit performance on large images.
+
+### 🚧 Future Improvements
+
+- **Web Worker Parallelization**
+  Offloading computation to Web Workers to enable parallel processing without blocking the UI thread.
+
+- **GPU Acceleration**
+  Exploring GPU-based implementations (e.g., WebGL/WebGPU) to significantly accelerate per-pixel operations.
+
+- **Memory Optimization**
+  Reducing intermediate buffer usage for large-scale image processing.
 
 ---
 
@@ -539,6 +563,7 @@ pace/
 ├── .github/workflows     # GitHub Actions CI (test + build + lint)
 ├── .gitignore
 ├── CHANGELOG.md
+├── CONTRIBUTING.md
 ├── README.md             # Project documentation
 └── LICENSE               # License information
 ```
