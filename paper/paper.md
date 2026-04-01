@@ -22,7 +22,7 @@ To address these limitations, this work presents **PACE**, a feature-driven cont
 ## 2. Software Description
 
 <p align="center">
-  <img src="./src/imgs/arch.png" width="800"/>
+  <img src="./figures/arch.png" width="800"/>
 </p>
 
 > Figure 1: Overview of the proposed Perceptual Adaptive Contrast Enhancement (PACE) framework. The method operates in the OKLab color space and focuses on luminance-guided enhancement through two complementary pathways: (1) a global statistics-driven controller that adaptively estimates enhancement parameters, and (2) a local perceptual stream that generates spatially varying masks. Multiple enhancement cues—comprising CLAHE-based contrast modulation, Retinex-inspired illumination correction, and Laplacian-based texture amplification—are integrated via a perceptually guided blending strategy coupled with a nonlinear stability mechanism, yielding a structurally consistent and visually natural enhanced image.
@@ -221,7 +221,10 @@ For more detailed visual comparisons, see
 
 To better visualize the results in Table 1, a radar chart is employed.
 
-![radar chart](figures/radar_chart.png)
+<p align="center">
+  <img src="./figures/radar_chart.png" width="800"/>
+</p>
+
 > Figure 3: Radar chart comparing the average performance of the evaluated enhancement methods across multiple quality metrics, highlighting the balanced performance of the proposed PACE approach.
 
 ✔ PACE achieves:
