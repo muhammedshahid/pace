@@ -1,57 +1,204 @@
+# PACE: A Feature-Driven Adaptive Contrast Enhancement Framework for Structure-Preserving Image Processing
+
+## Abstract
+Contrast enhancement is a fundamental preprocessing step in image analysis, yet existing methods often introduce artifacts such as over-enhancement, noise amplification, and structural distortion. This paper presents **Perceptual Adaptive Contrast Enhancement (PACE)**, a feature-driven framework designed to achieve stable and structure-preserving contrast improvement across diverse imaging conditions.
+
+PACE operates in the perceptually uniform OKLab color space and integrates complementary enhancement signals, including CLAHE-based local contrast, Retinex-inspired reflectance estimation, and Laplacian-based texture enhancement. A key component is an adaptive parameter controller that derives enhancement parameters from global image statistics, enabling content-aware processing without manual tuning. A nonlinear stability regulator is incorporated to suppress excessive amplification and improve robustness.
+
+The method is implemented as a modular software system supporting browser, Node.js, and command-line environments. Experimental evaluation demonstrates that PACE achieves a consistent balance between contrast enhancement and structural fidelity. The software is lightweight, reproducible, and suitable for integration into image processing and computer vision pipelines.
+
+## Keywords
+Image enhancement; contrast enhancement; adaptive processing; CLAHE; Retinex; perceptual image processing; OKLab
+
+## 1. Introduction
+Contrast enhancement is widely used to improve perceptual visibility and to support downstream image analysis tasks. Classical methods such as Histogram Equalization (HE) and Contrast Limited Adaptive Histogram Equalization (CLAHE) provide effective contrast amplification but often produce undesirable artifacts, including noise amplification, halo effects, and loss of structural consistency.
+
+Retinex-based approaches improve dynamic range under non-uniform illumination but typically require careful parameter tuning and may introduce instability across varying image conditions. Learning-based methods offer improved performance but introduce additional complexity, data dependency, and reduced interpretability.
+
+A key limitation across these approaches is the lack of robust adaptation to image-specific characteristics such as luminance distribution, structural complexity, and noise level. Fixed or weakly adaptive parameterizations often lead to inconsistent enhancement quality.
+
+To address these limitations, this work presents **PACE**, a feature-driven contrast enhancement framework that integrates multiple enhancement signals within an adaptive control mechanism. The proposed method is designed as a reusable and reproducible software system, enabling consistent performance across diverse image types while maintaining computational efficiency.
+
+## 2. Software Description
+
+### 2.1 Software Architecture
+PACE is implemented as a modular and extensible software system to support reproducibility and multi-environment deployment.
+
+The repository is structured into the following components:
+
+- Core module (`src/`): Implements feature extraction, adaptive parameter estimation, and enhancement logic  
+- Distribution builds (`dist/`): Provides optimized builds (ESM, CommonJS, CDN)  
+- Command-line interface (`cli/`): Enables batch processing  
+- Reproducibility module (`reproducibility/`): Benchmarking scripts  
+
+The software supports browser, Node.js, and CLI workflows.
+
+### 2.2 Functional Description
+PACE enhances image luminance through a feature-driven pipeline:
+
+1. Feature Extraction  
+2. Adaptive Parameter Estimation  
+3. Multi-Signal Enhancement (CLAHE, Retinex, Laplacian)  
+4. Perceptual Blending and Stabilization
+
+# 3. Methodology
+
+PACE operates as a structured **global-to-local adaptive enhancement pipeline**, integrating statistical feature extraction, parameter inference, spatial modulation, and perceptual multi-signal blending.
+
 ---
-title: "PACE: Perceptual Adaptive Contrast Enhancement"
 
-tags:
-  - image processing
-  - contrast enhancement
-  - computer vision
-  - perceptual color space
-  - OKLab
+## 3.1 Pipeline Overview
 
-authors:
-  - name: Mohd. Shahid
-    affiliation: 1
+The pipeline consists of four sequential stages:
 
-affiliations:
-  - name: Independent Researcher
-    index: 1
+1. **Global feature extraction**  
+2. **Adaptive parameter computation**  
+3. **Local strength modulation**  
+4. **Multi-signal adaptive blending**
 
-date: 2026-03-28
-bibliography: paper.bib
 ---
 
-# Summary
+## 3.2 Distribution Features
 
-Perceptual Adaptive Contrast Enhancement (PACE) is a structure-preserving image enhancement algorithm designed to improve visual quality while maintaining perceptual and structural fidelity. Unlike conventional contrast enhancement techniques such as Histogram Equalization (HE) and Contrast Limited Adaptive Histogram Equalization (CLAHE) [@pizer1987adaptive], as well as Retinex-based [@land1977retinex] and LIME [@guo2016lime] approaches, PACE operates in the OKLab perceptual color space and employs adaptive multi-signal blending to mitigate artifacts such as halo effects, over-enhancement, and color distortion.
+Let \( L = \{L_i\}_{i=1}^{N} \) denote luminance values.
 
-The method is particularly suitable for applications in computer vision and image analysis pipelines, where both visibility enhancement and preservation of structural information are critical.
+**Mean**
+```math
+\mu = \frac{1}{N} \sum_{i=1}^{N} L_i
+```
 
-The software is implemented in JavaScript and is available as an open-source package with both programmatic and command-line interfaces.
+**Variance**
+```math
+\sigma^2 = \max\left(0,\; \frac{1}{N} \sum L_i^2 - \mu^2 \right)
+```
 
-# Statement of Need
+**Standard Deviation**
+```math
+\sigma = \sqrt{\sigma^2}
+```
 
-Image enhancement is a fundamental preprocessing step in many computer vision tasks, particularly under varying light or high dynamic range conditions. Traditional methods such as Histogram Equalization (HE) and CLAHE often introduce unnatural contrast and loss of structural detail, while Retinex-based methods and LIME may produce color inconsistencies or amplify noise.
+**Skewness**
+```math
+\text{Skewness} = \frac{1}{N (\sigma + \epsilon)^3} \sum (L_i - \mu)^3
+```
 
-There is a clear need for a lightweight and perceptually grounded enhancement method that balances contrast improvement with structural preservation. PACE addresses this gap by integrating perceptual color modeling with adaptive enhancement strategies, making it suitable for both human visual interpretation and downstream machine learning applications.
+**Kurtosis**
+```math
+\text{Kurtosis} = \frac{1}{N (\sigma + \epsilon)^4} \sum (L_i - \mu)^4
+```
 
-# Functionality
+**Entropy**
+```math
+H = - \sum p_k \log_2(p_k + \epsilon)
+```
 
-PACE provides a complete JavaScript implementation of a perceptually guided contrast enhancement pipeline. The method operates in the OKLab color space to ensure perceptual consistency and applies adaptive multi-signal blending to balance global and local contrast adjustments.
+**Normalized Entropy**
+```math
+H_{norm} = \frac{H}{\log_2 K}
+```
 
-Key features include:
+**Dynamic Range**
+```math
+D = P_{95} - P_{5}
+```
 
-* Perceptually guided image enhancement using the OKLab color space
-* Adaptive contrast enhancement with explicit structure and edge preservation
-* Multi-signal fusion combining CLAHE-based, Retinex-inspired, and gradient-based (Laplacian) cues
-* Automatic parameter adaptation based on image statistics (no manual tuning required)
-* Optional configurable parameters for fine-grained control
-* Artifact suppression to mitigate halo effects, over-enhancement, and noise amplification
-* Efficient JavaScript implementation compatible with both browser and Node.js environments
-* Command-line interface (CLI) for batch processing and reproducible workflows
-* Integration support for image processing and machine learning pipelines
+**Shadow Ratio**
+```math
+R_s = \frac{1}{N} \sum \mathbf{{1}}(L_i < 0.2)
+```
 
-The repository includes visual comparisons and example evaluations against established enhancement methods.
+**Highlight Ratio**
+```math
+R_h = \frac{1}{N} \sum \mathbf{{1}}(L_i > 0.8)
+```
 
-# Acknowledgements
+---
 
-This work builds upon established concepts in digital image processing and perceptual quality assessment, including foundational work on histogram equalization and structural similarity. The development of PACE was also influenced by prior research in perceptual color spaces and low-light image enhancement methods.
+## 3.3 Adaptive Parameter Computation
+
+```math
+C_{need} = (1 - H_{norm})(1 - D)
+```
+
+```math
+S_{conf} = \frac{E_d}{1 + N_r}
+```
+
+```math
+I_{imb} = |R_s - R_h|
+```
+
+```math
+\alpha = \frac{0.5 I_{imb} + 0.3 C_{need} + 0.4 S_{conf}}{0.5 + 0.5 I_{imb} + 0.3 C_{need} + 0.4 S_{conf}}
+```
+
+---
+
+## 3.4 Local Adaptive Strength
+
+```math
+G = \max(|g_x|,|g_y|) + 0.25 \min(|g_x|,|g_y|)
+```
+
+```math
+S = \frac{\mu_G \cdot C}{1 + N_l}
+```
+
+```math
+\alpha(x,y) = \mathrm{{clip}}(\alpha [1 + 1.2(C_{{loc}}-0.5)], 0.05, 2\alpha)
+```
+
+---
+
+## 3.5 Multi-Signal Blending
+
+```math
+\alpha' = \alpha (0.8 + 0.8 \alpha_{{map}})
+```
+
+```math
+R = \log(L_{{small}}) - \log(L_{{medium}})
+```
+
+```math
+\Delta = \Delta_c + \eta \cdot \Delta_d \cdot M_d \cdot M_s \cdot M_e
+```
+
+```math
+L_{{enh}} = \mathrm{{clip}}(L + \Delta' \cdot G_e \cdot M_l \cdot G_c, 0, 1)
+```
+
+---
+
+## 3.6 Algorithm
+
+**Algorithm 1: PACE Enhancement**
+
+**Input:** RGB image \( I \)  
+**Output:** Enhanced image \( I_{{enh}} \)
+
+1. Convert \( I \) to OKLab and extract luminance \( L \)  
+2. Compute global distribution features  
+3. Estimate adaptive parameters  
+4. Apply CLAHE for base enhancement  
+5. Compute spatially adaptive strength map  
+6. Apply multi-signal blending  
+7. Reconstruct enhanced RGB image  
+
+**Return:** \( I_{{enh}} \)
+
+## 4. Illustrative Examples
+PACE produces stable enhancement across low-light images, natural scenes, and structured imagery. It avoids over-enhancement while preserving fine structural details.
+
+## 5. Impact
+PACE is applicable in remote sensing, medical imaging, low-light photography, and computer vision preprocessing.
+
+Key advantages:
+- Fully automatic operation  
+- Consistent performance  
+- Linear complexity O(N)  
+- Real-time capability  
+- Multi-platform deployment  
+
+## 6. Conclusions
+PACE integrates adaptive parameter estimation with multi-signal processing and nonlinear stabilization, achieving a balance between contrast enhancement and structural preservation. The software is reproducible, modular, and suitable for real-world applications.
