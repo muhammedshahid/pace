@@ -188,7 +188,35 @@ L_{{enh}} = \mathrm{{clip}}(L + \Delta' \cdot G_e \cdot M_l \cdot G_c, 0, 1)
 **Return:** \( I_{{enh}} \)
 
 ## 4. Illustrative Examples
-PACE produces stable enhancement across low-light images, natural scenes, and structured imagery. It avoids over-enhancement while preserving fine structural details.
+
+Qualitative comparison of image enhancement results on representative test images from
+different domains using the proposed PACE method against state-of-the-art techniques
+(CLAHE, HE, LIME, and MSRCR).
+
+![comaprison 1](figures/t3.png)
+
+> Figure 1: Chest X-ray (medical imaging). PACE delivers the most balanced and clinically useful enhancement. Lung vasculature, rib structures, and soft tissues appear sharply defined with excellent local contrast. In contrast, CLAHE and HE aggressively boost contrast, resulting in slight haloing and unnatural brightness around the mediastinum and heart region. LIME tends to darken portions of the image excessively, while MSRCR washes out fine structural details. PACE avoids these limitations and provides the highest diagnostic clarity.
+
+For more detailed visual comparisons, see  
+👉 [`examples/comparison`](../examples/comparison)
+
+
+## 5. Results and Discussion
+
+| Method | MSE ↓ | PSNR ↑ | SSIM ↑ | Entropy ↑ | CII ↑ | NIQE ↓ | BRISQUE ↓ | PIQE ↓ |
+|--------|------|--------|--------|----------|----------|----------|----------|----------|
+| HE     | 0.0500 | 15.58 | 0.6485 | 10.90 | **1.601** | 3.694 | 22.042 | 41.876 |
+| CLAHE  | 0.0229 | 17.26 | 0.7611 | 13.65 | 1.282 | 3.090 | 14.688 | 34.947 |
+| LIME   | 0.0510 | 13.09 | 0.7923 | **15.05** | 0.821 | **2.877** | 13.649 | **29.965** |
+| MSRCR  | 0.1120 | 9.78  | 0.6573 | 13.43 | 0.399 | 3.417 | **6.792**  | 30.143 |
+| **PACE** | **0.0043** | **23.93** | **0.9223** | 14.56 | 1.082 | 3.191 | 12.091 | 39.838 |
+
+✔ PACE achieves:
+- **Lowest reconstruction error (MSE)**
+- **Highest reconstruction quality (PSNR)**
+- **Highest structural similarity (SSIM)**
+- **High richness of information/details in the image (Entropy) without introducing noise**
+- **Balanced information enhancement**
 
 ## 5. Impact
 PACE is applicable in remote sensing, medical imaging, low-light photography, and computer vision preprocessing.
