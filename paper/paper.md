@@ -76,7 +76,7 @@ const enhanced = PACE.enhance(imageData, options);
   </script>
 ```
 
-### 2.3.3 Installation
+#### 2.3.3 Installation
 
 PACE can be installed via npm:
 
@@ -226,7 +226,7 @@ G = \max(|g_x|, |g_y|) + 0.25 \min(|g_x|, |g_y|)
 **Spatially Adaptive Alpha**
 
 ```math
-\alpha(x,y) = \operatorname{clip}\left( \alpha \left[1 + 1.2 (C_{\text{loc}} - 0.5)\right], 0.05, 2\alpha \right)
+\alpha(x,y) = \mathrm{clip}\left( \alpha \left[1 + 1.2 (C_{\text{loc}} - 0.5)\right], 0.05, 2\alpha \right)
 ```
 
 This enables spatially varying enhancement while preserving structural consistency.
@@ -254,7 +254,7 @@ R = \log(L_{\text{small}}) - \log(L_{\text{medium}})
 **Final Enhanced Luminance**
 
 ```math
-L_{\text{enh}} = \operatorname{clip}\left( L + \Delta' \cdot G_e \cdot M_l \cdot G_c, 0, 1 \right)
+L_{\text{enh}} = \mathrm{clip}\left( L + \Delta' \cdot G_e \cdot M_l \cdot G_c, 0, 1 \right)
 ```
 
 Multiple enhancement signals(Clahe, Retinex & Laplacian) are combined using perceptual weighting to produce the final enhanced luminance.
