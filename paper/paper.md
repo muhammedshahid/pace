@@ -209,6 +209,53 @@ For more detailed visual comparisons, see
 
 ## 5. Results and Discussion
 
+### 5.1 Experimental Setup
+
+To ensure robust and reproducible evaluation, PACE is tested on a diverse set of images drawn from two widely used benchmarks:
+
+- **LOL Dataset** (low-light image enhancement)
+- **BSDS500 Dataset** (natural scenes with structural diversity)
+
+A total of **50 images** are selected, covering:
+- low-light conditions  
+- high dynamic range scenes  
+- texture-rich natural images  
+
+All reported results correspond to the **average performance across all test images**, ensuring statistical reliability.
+
+---
+
+#### Reproducibility
+
+A subset of 50 images is selected to ensure diversity in illumination, contrast, and scene structure. The selection includes:
+
+- low-light images from LOL dataset  
+- natural scenes from BSDS500  
+
+Images are chosen to cover a representative range of visual conditions rather than a fixed predefined split.
+
+Detailed instructions for reproducing results, including dataset preparation and execution steps, are provided in the repository’s reproducibility section.
+
+### 5.2 Quantitative Evaluation
+
+We compare PACE against standard enhancement techniques:
+
+- Histogram Equalization (HE)  
+- CLAHE  
+- MSRCR (Multi-Scale Retinex with Color Restoration)  
+- LIME  
+
+The following metrics are used:
+
+- **MSE ↓** — pixel-level error
+- **PSNR ↑** — reconstruction fidelity / signal quality
+- **SSIM ↑** — structural similarity & perceptual fidelity
+- **Entropy ↑** — information richness & detail content
+- **CII ↑** — contrast improvement
+- **NIQE ↓** — perceptual naturalness (no-reference)
+- **BRISQUE ↓** — blind spatial quality (natural scene statistics)
+- **PIQE ↓** — perception-based local distortion quality
+
 | Method | MSE ↓ | PSNR ↑ | SSIM ↑ | Entropy ↑ | CII ↑ | NIQE ↓ | BRISQUE ↓ | PIQE ↓ |
 |--------|------|--------|--------|----------|----------|----------|----------|----------|
 | HE     | 0.0500 | 15.58 | 0.6485 | 10.90 | **1.601** | 3.694 | 22.042 | 41.876 |
@@ -217,7 +264,7 @@ For more detailed visual comparisons, see
 | MSRCR  | 0.1120 | 9.78  | 0.6573 | 13.43 | 0.399 | 3.417 | **6.792**  | 30.143 |
 | **PACE** | **0.0043** | **23.93** | **0.9223** | 14.56 | 1.082 | 3.191 | 12.091 | 39.838 |
 
-> Table 1. Average quantitative performance across test images. For MSE, NIQE, BRISQUE and PIQE, lower values(↓) indicate better performance, whereas higher values(↑) are preferred for PSNR, SSIM
+> Table 1. Average quantitative performance across test images. For MSE, NIQE, BRISQUE and PIQE, lower values(↓) indicate better performance, whereas higher values(↑) are preferred for PSNR, SSIM, Entropy, CII
 
 To better visualize the results in Table 1, a radar chart is employed.
 
