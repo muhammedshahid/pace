@@ -21,6 +21,12 @@ To address these limitations, this work presents **PACE**, a feature-driven cont
 
 ## 2. Software Description
 
+<p align="center">
+  <img src="./src/imgs/arch.png" width="800"/>
+</p>
+
+> Figure 1: Overview of the proposed Perceptual Adaptive Contrast Enhancement (PACE) framework. The method operates in the OKLab color space and focuses on luminance-guided enhancement through two complementary pathways: (1) a global statistics-driven controller that adaptively estimates enhancement parameters, and (2) a local perceptual stream that generates spatially varying masks. Multiple enhancement cues—comprising CLAHE-based contrast modulation, Retinex-inspired illumination correction, and Laplacian-based texture amplification—are integrated via a perceptually guided blending strategy coupled with a nonlinear stability mechanism, yielding a structurally consistent and visually natural enhanced image.
+
 ### 2.1 Software Architecture
 PACE is implemented as a modular and extensible software system to support reproducibility and multi-environment deployment.
 
@@ -195,7 +201,7 @@ different domains using the proposed PACE method against state-of-the-art techni
 
 ![comaprison 1](figures/t3.png)
 
-> Figure 1: Chest X-ray (medical imaging). PACE delivers the most balanced and clinically useful enhancement. Lung vasculature, rib structures, and soft tissues appear sharply defined with excellent local contrast. In contrast, CLAHE and HE aggressively boost contrast, resulting in slight haloing and unnatural brightness around the mediastinum and heart region. LIME tends to darken portions of the image excessively, while MSRCR washes out fine structural details. PACE avoids these limitations and provides the highest diagnostic clarity.
+> Figure 2: Chest X-ray (medical imaging). PACE delivers the most balanced and clinically useful enhancement. Lung vasculature, rib structures, and soft tissues appear sharply defined with excellent local contrast. In contrast, CLAHE and HE aggressively boost contrast, resulting in slight haloing and unnatural brightness around the mediastinum and heart region. LIME tends to darken portions of the image excessively, while MSRCR washes out fine structural details. PACE avoids these limitations and provides the highest diagnostic clarity.
 
 For more detailed visual comparisons, see  
 👉 [`examples/comparison`](../examples/comparison)
@@ -211,6 +217,13 @@ For more detailed visual comparisons, see
 | MSRCR  | 0.1120 | 9.78  | 0.6573 | 13.43 | 0.399 | 3.417 | **6.792**  | 30.143 |
 | **PACE** | **0.0043** | **23.93** | **0.9223** | 14.56 | 1.082 | 3.191 | 12.091 | 39.838 |
 
+> Table 1. Average quantitative performance across test images. For MSE, NIQE, BRISQUE and PIQE, lower values(↓) indicate better performance, whereas higher values(↑) are preferred for PSNR, SSIM
+
+To better visualize the results in Table 1, a radar chart is employed.
+
+![radar chart](figures/radar_chart.png)
+> Figure 3: Radar chart comparing the average performance of the evaluated enhancement methods across multiple quality metrics, highlighting the balanced performance of the proposed PACE approach.
+
 ✔ PACE achieves:
 - **Lowest reconstruction error (MSE)**
 - **Highest reconstruction quality (PSNR)**
@@ -218,7 +231,7 @@ For more detailed visual comparisons, see
 - **High richness of information/details in the image (Entropy) without introducing noise**
 - **Balanced information enhancement**
 
-## 5. Impact
+## 6. Impact
 PACE is applicable in remote sensing, medical imaging, low-light photography, and computer vision preprocessing.
 
 Key advantages:
@@ -228,5 +241,5 @@ Key advantages:
 - Real-time capability  
 - Multi-platform deployment  
 
-## 6. Conclusions
+## 7. Conclusions
 PACE integrates adaptive parameter estimation with multi-signal processing and nonlinear stabilization, achieving a balance between contrast enhancement and structural preservation. The software is reproducible, modular, and suitable for real-world applications.
