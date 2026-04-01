@@ -1,33 +1,48 @@
-# PACE: A Perceptual Adaptive Contrast Enhancement Software for Robust Image Enhancement
+# PACE: A Lightweight Adaptive Image Enhancement Software Framework
 
 ## Abstract
 
-We present PACE (Perceptual Adaptive Contrast Enhancement), a lightweight and fully adaptive software framework for image enhancement. Unlike traditional methods such as Histogram Equalization (HE) and CLAHE, or computationally intensive Retinex-based approaches, PACE integrates global statistical features, local structural awareness, and perceptual multi-signal blending into a unified pipeline. The software is designed for reproducibility, ease of integration, and efficient execution across diverse imaging conditions. Experimental results demonstrate that PACE consistently improves perceptual quality and structural fidelity across standard datasets.
+PACE (Perceptual Adaptive Contrast Enhancement) is a lightweight, fully adaptive software framework for robust image enhancement. The system integrates global statistical analysis, local structural modulation, and perceptual multi-signal blending into a unified pipeline. Designed for reproducibility and ease of integration, PACE operates efficiently across diverse imaging conditions without requiring training or manual tuning. The software consistently improves perceptual quality and structural fidelity while maintaining computational efficiency, making it suitable for both research and real-world applications.
 
+## Software Metadata
 ---
-
-## Keywords
-Image enhancement; contrast enhancement; adaptive processing; CLAHE; Retinex; perceptual image processing; OKLab
+| Field                | Description  |
+| -------------------- | -------------------------------------------------------------------------------- |
+| Software name        | PACE (Perceptual Adaptive Contrast Enhancement)  |
+| Version              | v3.0.0 |
+| Repository           | [https://github.com/muhammedshahid/pace](https://github.com/muhammedshahid/pace) |
+| DOI                  | 10.5281/zenodo.19203394  |
+| License              | MIT License  |
+| Programming language | JavaScript (Node.js, Browser, ESM) |
+| Dependencies         | Minimal   |
+| Operating systems    | Windows, Linux, macOS |
+| Installation         | npm install pace  |
+| Documentation        | GitHub README    |
+| Support email        | [smuhammed621@gmail.com](mailto:smuhammed621@gmail.com) |
+| Keywords             | image enhancement, adaptive processing, computer vision, OKLab color space, open-source software, real-time processing |
 
 ---
 
 ## 1. Introduction and Statement of Need
 
-Image enhancement is a fundamental preprocessing step in computer vision and image analysis. Existing approaches such as HE and CLAHE often suffer from over-enhancement and noise amplification, while Retinex-based methods and illumination models (e.g., LIME) introduce computational complexity and visual artifacts such as halo effects.
+Image enhancement is a critical preprocessing step in computer vision and image analysis. Traditional approaches such as Histogram Equalization (HE) and CLAHE often suffer from over-enhancement and noise amplification, while Retinex-based approaches introduce computational complexity and visual artifacts.
 
-There is a clear need for a software solution that:
+There is a need for software that:
 
-- Adapts automatically to varying image conditions
-- Balances enhancement quality with computational efficiency
-- Is easy to integrate into real-world pipelines
+* Adapts automatically to image characteristics
+* Preserves structural fidelity
+* Is computationally efficient
+* Is easy to integrate into existing pipelines
 
-PACE addresses this gap by providing a fully adaptive, modular, and efficient enhancement framework that combines global distribution analysis with local spatial modulation and perceptual blending.
+PACE addresses this need by providing a modular, adaptive enhancement framework combining statistical modeling and perceptual processing.
+
+Unlike learning-based approaches, PACE does not require training data or model optimization.
 
 ---
 
 ## 2. Software Description
 
-### 2.1 Software Architecture
+### 2.1 Architecture
 
 PACE operates as a structured **global-to-local adaptive enhancement pipeline**, integrating statistical feature extraction, parameter inference, spatial modulation, and perceptual multi-signal blending.
 
@@ -35,193 +50,204 @@ PACE operates as a structured **global-to-local adaptive enhancement pipeline**,
 
 > Figure 1: Overview of the proposed Perceptual Adaptive Contrast Enhancement (PACE) framework. The method operates in the OKLab color space and focuses on luminance-guided enhancement through two complementary pathways: (1) a global statistics-driven controller that adaptively estimates enhancement parameters, and (2) a local perceptual stream that generates spatially varying masks. Multiple enhancement cues—comprising CLAHE-based contrast modulation, Retinex-inspired illumination correction, and Laplacian-based texture amplification—are integrated via a perceptually guided blending strategy coupled with a nonlinear stability mechanism, yielding a structurally consistent and visually natural enhanced image.
 
-### 2.2 Implementation Logic
+PACE follows a global-to-local pipeline:
 
-**Algorithm 1: PACE Enhancement**
+1. Global feature extraction
+2. Adaptive parameter estimation
+3. Local modulation
+4. Multi-signal blending
 
-**Input:** RGB image \( I \)  
-**Output:** Enhanced image \( I_{{enh}} \)
+### 2.2 Implementation
 
-1. Convert \( I \) to OKLab and extract luminance \( L \)  
-2. Compute global distribution features  
-3. Estimate adaptive parameters  
-4. Apply CLAHE for base enhancement  
-5. Compute spatially adaptive strength map  
-6. Apply multi-signal blending  
-7. Reconstruct enhanced RGB image  
+The software is implemented in JavaScript and supports:
 
-### 2.3 Installation
+* Browser (CDN)
+* Node.js
+* ES Modules
+* CLI batch processing
 
-PACE works in **browser (CDN)**, **ES Modules**, and **Node (CommonJS)**.
+### 2.3 Installation and Distribution
+
+PACE is designed for high accessibility and can be integrated into diverse environments:
 
 #### 2.3.1 Browser (CDN / Global Script)
+
+For quick prototyping or integration into web tools without a build step:
 
 ```html
 <script src="https://cdn.jsdelivr.net/gh/muhammedshahid/pace@main/dist/pace.min.js"></script>
 ```
 
-```js
-const enhanced = PACE.enhance(imageData, options);
-```
+#### 2.3.2 ES Modules (Modern Web)
 
-#### 2.3.2 ES Modules (Native Browser)
+For native browser support using standard import syntax:
 
 ```html
 <script type="module"> 
   import { PACE, applyPACE } from "https://cdn.jsdelivr.net/gh/muhammedshahid/pace@main/dist/pace.esm.js";
-  const output = await applyPACE(imageData, options); 
-  <!-- 
-    const output = await PACE.enhance(imageData, options);
-  -->
   </script>
 ```
+#### 2.3.3 Package Manager (Node.js/Bundlers)
 
-#### 2.3.3 Installation
-
-PACE can be installed via npm:
-
-##### 2.3.3.1 Install globally
-
-```bash
-npm install -g pace
-```
-
-##### 2.3.3.2 Install locally
+For local development or server-side processing:
 
 ```bash
 npm install pace
 ```
 
-### 2.4 Usage
+### 2.4 Usage and Advanced Configuration
 
-The software accepts an RGB image as input and returns an enhanced image of the same resolution:
+PACE provides a high-level API designed for ease of integration. It can be used in server-side environments, modern web applications, or directly in the browser.
 
-#### ES Modules (Bundler / Node.js)
+#### 2.4.1 Global Script (Legacy/CDN)
 
 ```js
-import { applyPACE } from "pace";
+// Options details illustrated in 'Options section'
+const options = {
+  strength: 2.0,      // Manually override the adaptive scaling factor
+  debug: true,        // Export internal computed parameters (alpha, mu, sigma, etc.)
+  config: "./my-params.json" // Path to a custom configuration file
+};
 
-// imageData: ImageData object
+// Available as a global PACE object
+const output = PACE.enhance(imageData, options);
+```
+
+#### 2.4.2 Native Browser (ES Modules)
+
+```js
+import { applyPACE } from "https://cdn.jsdelivr.net/gh/muhammedshahid/pace@main/dist/pace.esm.js";
+
 const output = await applyPACE(imageData, options);
 ```
 
-OR
+#### 2.4.3 Node.js / Bundlers
 
 ```js
-import { PACE } from "pace";
-
-// imageData: ImageData object
-const output = await PACE.enhance(imageData, options);
+import { applyPACE } from "pace";
+const output = await applyPACE(imageData, options);
 ```
+
+#### Command Line Interface (CLI)
+> For high-throughput scientific workflows, PACE supports a feature-rich CLI:
+
+```bash
+pace <input> <output> [options]
+```
+
+#### Options 
+
+> PACE provides a flexible API and a Command Line Interface (CLI) to support both automated batch processing and interactive usage via options.
+
+- `--debug` → Enable detailed debug logs (exports JSON)
+- `--strength <value>` → Control enhancement strength (default: 1.0)
+- `--config <file>` → Load JSON config for reproducibility or research workflow
+- `--help` → Show help
+- `--version` → Show version
+
+#### Examples
+
+```bash
+pace input.jpg output.png
+pace input.jpg output.png --strength 0.8
+pace input.jpg output.png --debug
+pace input.jpg output.png --config config.json
+
+# Batch Processing
+pace input_path output_path
+```
+
+#### Configuration (Advanced)
+
+PACE is engineered to support the rigorous requirements of scientific reproducibility through a structured configuration.
+
+```json
+{
+  "strength": 1.0,
+  "override": {
+    "controlParams": {
+        "tileSize": 8,
+        "clipLimit": 2.0,
+        "globalAlpha": 0.7
+    },
+    "perceptualParams": {
+        "lambda": 0.48,
+        "beta": 0.33,
+        "tau": 0.68,
+        "edgeStabilizer": 0.05
+    }
+  }
+}
+```
+
+##### Control Parameters
+
+- **tileSize**  
+  Defines the local region size for CLAHE-based enhancement.
+  Smaller values → finer local contrast; larger values → smoother enhancement.
+
+- **clipLimit**  
+  Controls histogram clipping to prevent over-amplification.
+  Higher values → stronger contrast; lower values → reduced noise amplification.
+
+- **globalAlpha (α)**  
+  Global enhancement factor derived from **contrast demand, structural confidence, and luminance imbalance**.  
+  It regulates the overall strength of enhancement.
+  Higher values → stronger enhancement.
+
+
+##### Perceptual Parameters
+
+- **lambda (λ) — Stability Regulator**  
+  Controls nonlinear contrast compression based on **contrast strength and noise energy**. Prevents unstable amplification in high-noise or high-contrast regions.
+
+- **beta (β) — Highlight Protection**  
+  Modulates enhancement in bright regions based on **luminance distribution skewness and highlight dominance**, preventing saturation and detail loss.
+
+- **tau (τ) — Tone Limiter**  
+  Limits enhancement in low-contrast regions to avoid excessive amplification and noise boosting.
+
+- **edgeStabilizer (k) — Edge Stability Control**  
+  Regulates edge enhancement stability based on noise level
+  Higher noise → stronger stabilization → reduced artifacts near edges.
+
+> Control parameters determine the global and local enhancement behavior
+> Perceptual parameters enforce visual consistency and stability constraints
+
 
 ### 2.5 Features
 
-- Perceptual-aware enhancement (not blind contrast stretching)
-- Preserves edges, textures, structural details along with balanced contrast control
-- Adaptive control using image statistics (no manual tuning required)
-- Optional configurable parameters for fine-grained control
-- No color distortion (Oklab-based processing)
-- Multi-signal fusion (CLAHE, Retinex-inspired, Laplacian)
-- Artifact suppression & structure preservation
-- Fast JavaScript implementation (Browser + Node.js + CLI)
-- CLI tool for batch processing
-- Debug pipeline with JSON export (research-friendly)
-
-### 2.6 Input and Output
-
-- Input: RGB image (Uint8 or Float format)
-- Output: Enhanced RGB image
+* Perceptual-aware enhancement (not blind contrast stretching)
+* Preserves edges, textures, structural details along with balanced contrast control
+* Adaptive control using image statistics (no manual tuning required)
+* Optional configurable parameters for fine-grained control
+* No color distortion (Oklab-based processing)
+* Multi-signal fusion (CLAHE, Retinex-inspired, Laplacian)
+* Artifact suppression & structure preservation
+* Cross-platform compatibility (Browser + Node.js + CLI)
+* Fast JavaScript implementation
+* CLI tool for batch processing
+* Debug pipeline with JSON export (research-friendly)
 
 ---
 
-## 3. Methodology
+## 3. Method Overview
 
-PACE operates as a structured global-to-local adaptive enhancement pipeline consisting of:
+PACE combines global statistics and local perception:
 
-1. Global feature extraction
-2. Adaptive parameter computation
-3. Local strength modulation
-4. Multi-signal blending
+* Global distribution modeling
+* Adaptive parameter computation
+* Spatial modulation
+* Multi-signal blending
 
-### 3.1 Mathematical Model
-
-#### 3.1.1 Distribution Features
-
-Let \( L = \{L_i\}_{i=1}^{N} \) denote luminance values.
-
-**Mean**
-
-```math
-\mu = \frac{1}{N} \sum_{i=1}^{N} L_i
-```
-
-**Standard Deviation**
-
-```math
-\sigma = \sqrt{\max\left(0, \frac{1}{N} \sum_{i=1}^{N} L_i^2 - \mu^2 \right)}
-```
-
-**Normalized Entropy**
-
-```math
-H_{\text{norm}} = \frac{- \sum_k p_k \log_2(p_k + \epsilon)}{\log_2(K)}
-```
-
-**Dynamic Range**
-
-```math
-D = P_{95} - P_{5}
-```
-
-**Shadow Ratio**
-
-```math
-R_s = \frac{1}{N} \sum_{i=1}^{N} \mathbf{1}(L_i < 0.2)
-```
-
-**Highlight Ratio**
-
-```math
-R_h = \frac{1}{N} \sum_{i=1}^{N} \mathbf{1}(L_i > 0.8)
-```
-
-These features capture global brightness, contrast spread, information content, and illumination imbalance.
-
-#### 3.1.2 Adaptive Parameter Computation
-
-**Contrast Need**
-
-```math
-C_{\text{need}} = (1 - H_{\text{norm}})(1 - D)
-```
-
-**Structural Confidence**
-
-```math
-S_{\text{conf}} = \frac{E_d}{1 + N_r}
-```
-
-**Illumination Imbalance**
-
-```math
-I_{\text{imb}} = |R_s - R_h|
-```
+Only key formulation is retained for clarity.
 
 **Adaptive Strength**
 
 ```math
 \alpha = \frac{0.5 I_{\text{imb}} + 0.3 C_{\text{need}} + 0.4 S_{\text{conf}}}{0.5 + 0.5 I_{\text{imb}} + 0.3 C_{\text{need}} + 0.4 S_{\text{conf}}}
 ```
-
-This formulation balances contrast demand, structural confidence, and illumination imbalance.
-
-#### 3.1.3 Local Adaptive Strength
-
-**Gradient Magnitude Approximation**
-
-```math
-G = \max(|g_x|, |g_y|) + 0.25 \min(|g_x|, |g_y|)
-```
+> This formulation balances contrast demand, structural confidence, and illumination imbalance.
 
 **Spatially Adaptive Alpha**
 
@@ -229,21 +255,7 @@ G = \max(|g_x|, |g_y|) + 0.25 \min(|g_x|, |g_y|)
 \alpha(x,y) = \mathrm{clip}\left( \alpha \left[1 + 1.2 (C_{\text{loc}} - 0.5)\right], 0.05, 2\alpha \right)
 ```
 
-This enables spatially varying enhancement while preserving structural consistency.
-
-#### 3.1.4 Multi-Signal Blending
-
-**Refined Alpha**
-
-```math
-\alpha' = \alpha (0.8 + 0.8 \alpha_{\text{map}})
-```
-
-**Multi-Scale Retinex Component**
-
-```math
-R = \log(L_{\text{small}}) - \log(L_{\text{medium}})
-```
+> This enables spatially varying enhancement while preserving structural consistency.
 
 **Combined Detail Signal**
 
@@ -256,48 +268,16 @@ R = \log(L_{\text{small}}) - \log(L_{\text{medium}})
 ```math
 L_{\text{enh}} = \mathrm{clip}\left( L + \Delta' \cdot G_e \cdot M_l \cdot G_c, 0, 1 \right)
 ```
-
-Multiple enhancement signals(Clahe, Retinex & Laplacian) are combined using perceptual weighting to produce the final enhanced luminance.
+> Multiple enhancement signals(Clahe, Retinex & Laplacian) are combined using perceptual weighting to produce the final enhanced luminance.
 
 ---
 
-## 4. Results and Evaluation
+## 4. Performance Evaluation
 
-### 4.1 Experimental Setup
+PACE is evaluated on:
 
-To ensure robust and reproducible evaluation, PACE is tested on a diverse set of images drawn from two widely used benchmarks:
-
-- **LOL Dataset** (low-light image enhancement)
-- **BSDS500 Dataset** (natural scenes with structural diversity)
-
-A total of **50 images** are selected, covering:
-- low-light conditions  
-- high dynamic range scenes  
-- texture-rich natural images  
-
-All reported results correspond to the **average performance across all test images**, ensuring statistical reliability.
-
-### 4.2 Visual Comparison
-
-Qualitative comparison of image enhancement results on representative test images from
-different domains using the proposed PACE method against state-of-the-art techniques
-(CLAHE, HE, LIME, and MSRCR).
-
-![comaprison 1](figures/t3.png)
-
-> Figure 2: Chest X-ray (medical imaging). PACE delivers the most balanced and clinically useful enhancement. Lung vasculature, rib structures, and soft tissues appear sharply defined with excellent local contrast. In contrast, CLAHE and HE aggressively boost contrast, resulting in slight haloing and unnatural brightness around the mediastinum and heart region. LIME tends to darken portions of the image excessively, while MSRCR washes out fine structural details. PACE avoids these limitations and provides the highest diagnostic clarity.
-
-For more detailed visual comparisons, see  
-👉 [`examples/comparison`](../examples/comparison)
-
-### 4.2 Quantitative Comparison
-
-We compare PACE against standard enhancement techniques:
-
-- Histogram Equalization (HE)  
-- CLAHE  
-- MSRCR (Multi-Scale Retinex with Color Restoration)  
-- LIME  
+* LOL dataset
+* BSDS500 dataset
 
 The following metrics are used:
 
@@ -310,6 +290,8 @@ The following metrics are used:
 - **BRISQUE**   — blind spatial quality (natural scene statistics)
 - **PIQE**      — perception-based local distortion quality
 
+### 4.1 Experimental Results
+
 | Method | MSE ↓ | PSNR ↑ | SSIM ↑ | Entropy ↑ | CII ↑ | NIQE ↓ | BRISQUE ↓ | PIQE ↓ |
 |--------|------|--------|--------|----------|----------|----------|----------|----------|
 | HE     | 0.0500 | 15.58 | 0.6485 | 10.90 | **1.601** | 3.694 | 22.042 | 41.876 |
@@ -318,35 +300,68 @@ The following metrics are used:
 | MSRCR  | 0.1120 | 9.78  | 0.6573 | 13.43 | 0.399 | 3.417 | **6.792**  | 30.143 |
 | **PACE** | **0.0043** | **23.93** | **0.9223** | 14.56 | 1.082 | 3.191 | 12.091 | 39.838 |
 
-> Table 1. Average quantitative performance across test images. For MSE, NIQE, BRISQUE and PIQE, lower values(↓) indicate better performance, whereas higher values(↑) are preferred for PSNR, SSIM, Entropy, CII
+> Table 1. Average quantitative performance across 50 test images. For MSE, NIQE, BRISQUE and PIQE, lower values(↓) indicate better performance, whereas higher values(↑) are preferred for PSNR, SSIM, Entropy, CII
 
-To better visualize the results in Table 1, a radar chart is employed.
+PACE achieves:
+- **Lowest reconstruction error (MSE)**
+- **Highest reconstruction quality (PSNR)**
+- **Highest structural similarity (SSIM)**
+- **High richness of information/details in the image (Entropy) without introducing noise**
+- **Balanced information enhancement**
 
-<p align="center">
-  <img src="./figures/radar_chart.png" width="800"/>
-</p>
+Results show consistent improvement in structural fidelity and perceptual quality compared to baseline methods.
 
-> Figure 3: Radar chart comparing the average performance of the evaluated enhancement methods across multiple quality metrics, highlighting the balanced performance of the proposed PACE approach.
-
-### 4.3 Discussion
-
-PACE consistently achieves improved structural fidelity and perceptual quality compared to baseline methods. Unlike global approaches, PACE adapts enhancement strength dynamically, avoiding over-amplification of noise and preserving natural appearance.
-
-### 4.4 Runtime Analysis
-
-PACE demonstrates competitive runtime performance compared to computationally intensive methods such as MSRCR and LIME, making it suitable for real-time and interactive applications.
+> All methods were evaluated using consistent parameter settings and identical input conditions to ensure fair comparison.
 
 ---
 
-## 5. Use Cases
+## 5. Impact and Reuse Potential
 
-PACE can be applied in:
+### 5.1 Representative Use Case: Remote Sensing
 
-- General-purpose image enhancement  
-- Preprocessing for computer vision and machine learning pipelines 
-- Surveillance & remote sensing  
-- Photography and low-light imaging  
-- Medical and scientific image analysis imaging  
+PACE provides significant utility for remote sensing applications by enhancing low-contrast terrain features while preserving color fidelity. As illustrated in Figure 2, the framework improves the visibility of geographical boundaries, urban regions, and water bodies in satellite imagery without introducing artifacts.
+
+![PACE Strength param demo](./figures/pace_strength_param.png)
+
+> Figure 2: Impact of PACE on remote sensing imagery. Left: original satellite image. Center: fully adaptive enhancement (PACE Auto) providing natural contrast. Right: parameter-controlled enhancement (`--strength 2.0`) enabling improved visibility of fine-grained structures.
+
+The parameter-controlled mode (e.g., `--strength 2.0`) allows users to emphasize subtle geological or structural features when required, complementing the default adaptive behavior that prioritizes perceptual naturalness.
+
+> Similar improvements are observed across other domains, including medical imaging and natural scene enhancement, highlighting the general-purpose nature of the framework.
+
+---
+
+### 5.2 Reproducibility and Research Workflows
+
+PACE is designed with reproducibility as a core principle:
+
+- **Configuration-driven execution:** JSON-based configuration enables exact parameter replication across environments.
+- **Diagnostic parameter export:** Using the `--debug` flag or `debug: true` API option, the software exports computed statistical features (e.g., entropy, illumination ratios, adaptive strength \\(\\alpha\\)).
+- **Transparent processing:** These exports provide full visibility into internal decision-making, supporting auditability and scientific reporting.
+- **Batch processing support:** CLI integration allows large-scale datasets to be processed under consistent and reproducible conditions.
+
+---
+
+### 5.3 Reuse Across Domains
+
+The modular design of PACE enables reuse across multiple research domains:
+
+- **Medical imaging:** Enhancing contrast in X-ray and MRI data for improved interpretability  
+- **Remote sensing:** Supporting land-cover analysis and environmental monitoring  
+- **Computer vision pipelines:** Serving as a preprocessing step for detection, segmentation, and recognition tasks  
+- **General-purpose image enhancement:** Improving visual quality of everyday images (photography, web content, archival data) under diverse lighting and contrast conditions without domain-specific tuning
+
+---
+
+### 5.4 Integration and Extensibility
+
+PACE is designed for straightforward integration and extensibility:
+
+- **Cross-platform support:** Compatible with Node.js, modern browsers (ES Modules), and CDN-based usage  
+- **Flexible API:** Fully automatic operation with optional parameter overrides for specialized use cases  
+- **Lightweight design:** Minimal dependencies enable seamless integration into existing systems  
+
+The software is reusable, extensible, and suitable for both research and production environments.
 
 ---
 
@@ -361,23 +376,54 @@ A subset of 50 images is selected to ensure diversity in illumination, contrast,
 
 Images are chosen to cover a representative range of visual conditions rather than a fixed predefined split.
 
+> The evaluation pipeline is reproducible using the provided code and configuration files. Although the exact subset of images used in this study is not distributed, equivalent results can be obtained by applying the same procedure to the publicly available LOL and BSDS500 datasets.
 > No hidden steps or proprietary tools are used.
 ---
 
 ## 7. Limitations and Future Work
 
-While PACE demonstrates strong performance across a range of imaging conditions, several limitations remain.
+* Linear complexity may impact very high-resolution images
+* Current implementation is single-threaded
 
-The current implementation operates with linear time complexity \( O(N) \), where \( N \) is the number of pixels. Although this ensures scalability, processing time increases proportionally with image resolution. Consequently, very high-resolution inputs (e.g., 8K images or large scientific datasets) may incur higher computational cost and memory usage, particularly in browser-based environments.
+Future work includes:
 
-In addition, the present implementation primarily relies on single-threaded execution, which limits the utilization of modern multi-core hardware and may affect performance on large-scale inputs.
-
-Future work will focus on improving computational efficiency and scalability. Planned enhancements include parallel processing using Web Workers, GPU acceleration through technologies such as WebGL or WebGPU, and memory optimization strategies to reduce intermediate buffer usage during processing.
-
-These improvements are expected to further enhance the applicability of PACE in real-time and large-scale image processing scenarios.
+* Parallel processing
+* GPU acceleration
+* Memory optimization
 
 ---
 
 ## 8. Conclusion
 
-PACE provides a practical, adaptive, and efficient solution for image enhancement. Its modular design and reproducible implementation make it suitable for both research and real-world applications.
+PACE provides a practical and efficient software solution for adaptive image enhancement. Its modular design and reproducibility make it suitable for both academic research and real-world deployment.
+
+## References
+
+[1] R.C. Gonzalez, R.E. Woods,  
+Digital Image Processing, 3rd Edition, Pearson, 2008.
+
+[2] K. Zuiderveld,  
+Contrast Limited Adaptive Histogram Equalization,  
+in: Graphics Gems IV, Academic Press, 1994, pp. 474–485.
+
+[3] D.J. Jobson, Z. Rahman, G.A. Woodell,  
+A multiscale retinex for bridging the gap between color images and the human observation of scenes,  
+IEEE Transactions on Image Processing 6 (7) (1997) 965–976.
+
+[4] X. Guo, Y. Li, H. Ling,  
+LIME: Low-Light Image Enhancement via Illumination Map Estimation,  
+IEEE Transactions on Image Processing 26 (2) (2017) 982–993.
+
+[5] P. Arbelaez, M. Maire, C. Fowlkes, J. Malik,  
+Contour Detection and Hierarchical Image Segmentation,  
+IEEE Transactions on Pattern Analysis and Machine Intelligence 33 (5) (2011) 898–916.  
+(BSDS500 Dataset)
+
+[6] W. Wei, C. Wang, W. Yang, J. Liu,  
+Deep Retinex Decomposition for Low-Light Enhancement,  
+BMVC, 2018.  
+(LOL Dataset)
+
+[7] B. Ottosson,  
+OKLab: A perceptual color space for image processing, 2020.  
+Available: https://bottosson.github.io/posts/oklab/
