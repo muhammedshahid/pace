@@ -552,8 +552,7 @@ pace/
 ├── reproducibility/      # Scripts to reproduce baseline comparisons (HE, CLAHE, MSRCR, LIME)
 ├── examples/             # Minimal usage examples (Node.js, browser)
 ├── tests/                # Test suite (unit + functional validation)
-├── paper.md              # JOSS paper (submission manuscript)
-├── paper.bib             # Bibliography for paper.md
+├── paper/                # SoftwareX paper (submission manuscript)
 ├── CITATION.cff          # Citation metadata (GitHub / academic use)
 ├── package.json          # Project metadata and dependencies
 ├── package-lock.json     # Dependency lockfile (reproducible installs)
