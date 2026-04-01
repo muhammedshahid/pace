@@ -6,6 +6,11 @@ We present PACE (Perceptual Adaptive Contrast Enhancement), a lightweight and fu
 
 ---
 
+## Keywords
+Image enhancement; contrast enhancement; adaptive processing; CLAHE; Retinex; perceptual image processing; OKLab
+
+---
+
 ## 1. Introduction and Statement of Need
 
 Image enhancement is a fundamental preprocessing step in computer vision and image analysis. Existing approaches such as HE and CLAHE often suffer from over-enhancement and noise amplification, while Retinex-based methods and illumination models (e.g., LIME) introduce computational complexity and visual artifacts such as halo effects.
@@ -27,6 +32,8 @@ PACE addresses this gap by providing a fully adaptive, modular, and efficient en
 PACE operates as a structured **global-to-local adaptive enhancement pipeline**, integrating statistical feature extraction, parameter inference, spatial modulation, and perceptual multi-signal blending.
 
 ![software Architecture](figures/arch.png)
+
+> Figure 1: Overview of the proposed Perceptual Adaptive Contrast Enhancement (PACE) framework. The method operates in the OKLab color space and focuses on luminance-guided enhancement through two complementary pathways: (1) a global statistics-driven controller that adaptively estimates enhancement parameters, and (2) a local perceptual stream that generates spatially varying masks. Multiple enhancement cues—comprising CLAHE-based contrast modulation, Retinex-inspired illumination correction, and Laplacian-based texture amplification—are integrated via a perceptually guided blending strategy coupled with a nonlinear stability mechanism, yielding a structurally consistent and visually natural enhanced image.
 
 ### 2.2 Implementation Logic
 
@@ -107,14 +114,20 @@ import { PACE } from "pace";
 const output = await PACE.enhance(imageData, options);
 ```
 
-### 2.3 Features
+### 2.5 Features
 
-- Fully adaptive parameter estimation
-- Modular pipeline architecture
-- No manual tuning required
-- CLI and browser compatibility
+- Perceptual-aware enhancement (not blind contrast stretching)
+- Preserves edges, textures, structural details along with balanced contrast control
+- Adaptive control using image statistics (no manual tuning required)
+- Optional configurable parameters for fine-grained control
+- No color distortion (Oklab-based processing)
+- Multi-signal fusion (CLAHE, Retinex-inspired, Laplacian)
+- Artifact suppression & structure preservation
+- Fast JavaScript implementation (Browser + Node.js + CLI)
+- CLI tool for batch processing
+- Debug pipeline with JSON export (research-friendly)
 
-### 2.4 Input and Output
+### 2.6 Input and Output
 
 - Input: RGB image (Uint8 or Float format)
 - Output: Enhanced RGB image
@@ -288,14 +301,14 @@ We compare PACE against standard enhancement techniques:
 
 The following metrics are used:
 
-- **MSE ↓** — pixel-level error
-- **PSNR ↑** — reconstruction fidelity / signal quality
-- **SSIM ↑** — structural similarity & perceptual fidelity
-- **Entropy ↑** — information richness & detail content
-- **CII ↑** — contrast improvement
-- **NIQE ↓** — perceptual naturalness (no-reference)
-- **BRISQUE ↓** — blind spatial quality (natural scene statistics)
-- **PIQE ↓** — perception-based local distortion quality
+- **MSE**       — pixel-level error
+- **PSNR**      — reconstruction fidelity / signal quality
+- **SSIM**      — structural similarity & perceptual fidelity
+- **Entropy**   — information richness & detail content
+- **CII**       — contrast improvement
+- **NIQE**      — perceptual naturalness (no-reference)
+- **BRISQUE**   — blind spatial quality (natural scene statistics)
+- **PIQE**      — perception-based local distortion quality
 
 | Method | MSE ↓ | PSNR ↑ | SSIM ↑ | Entropy ↑ | CII ↑ | NIQE ↓ | BRISQUE ↓ | PIQE ↓ |
 |--------|------|--------|--------|----------|----------|----------|----------|----------|
