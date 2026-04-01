@@ -306,8 +306,6 @@ Full methodology, comparisons, and results are documented in:
 
 ### 🔍 Reproducibility Guarantee
 
-All results reported in the paper can be reproduced using:
-
 * Provided JavaScript implementation (PACE)
 * Python scripts in `/reproducibility`
 * Fixed parameters and shared methodology
