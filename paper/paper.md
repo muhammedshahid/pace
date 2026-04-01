@@ -47,13 +47,11 @@ PACE enhances image luminance through a feature-driven pipeline:
 3. Multi-Signal Enhancement (CLAHE, Retinex, Laplacian)  
 4. Perceptual Blending and Stabilization
 
-# 3. Methodology
+## 3. Methodology
 
 PACE operates as a structured **global-to-local adaptive enhancement pipeline**, integrating statistical feature extraction, parameter inference, spatial modulation, and perceptual multi-signal blending.
 
----
-
-## 3.1 Pipeline Overview
+### 3.1 Pipeline Overview
 
 The pipeline consists of four sequential stages:
 
@@ -62,9 +60,8 @@ The pipeline consists of four sequential stages:
 3. **Local strength modulation**  
 4. **Multi-signal adaptive blending**
 
----
 
-## 3.2 Distribution Features
+### 3.2 Distribution Features
 
 Let \( L = \{L_i\}_{i=1}^{N} \) denote luminance values.
 
@@ -118,9 +115,7 @@ R_s = \frac{1}{N} \sum \mathbf{{1}}(L_i < 0.2)
 R_h = \frac{1}{N} \sum \mathbf{{1}}(L_i > 0.8)
 ```
 
----
-
-## 3.3 Adaptive Parameter Computation
+### 3.3 Adaptive Parameter Computation
 
 ```math
 C_{need} = (1 - H_{norm})(1 - D)
@@ -138,9 +133,7 @@ I_{imb} = |R_s - R_h|
 \alpha = \frac{0.5 I_{imb} + 0.3 C_{need} + 0.4 S_{conf}}{0.5 + 0.5 I_{imb} + 0.3 C_{need} + 0.4 S_{conf}}
 ```
 
----
-
-## 3.4 Local Adaptive Strength
+### 3.4 Local Adaptive Strength
 
 ```math
 G = \max(|g_x|,|g_y|) + 0.25 \min(|g_x|,|g_y|)
@@ -154,9 +147,7 @@ S = \frac{\mu_G \cdot C}{1 + N_l}
 \alpha(x,y) = \mathrm{{clip}}(\alpha [1 + 1.2(C_{{loc}}-0.5)], 0.05, 2\alpha)
 ```
 
----
-
-## 3.5 Multi-Signal Blending
+### 3.5 Multi-Signal Blending
 
 ```math
 \alpha' = \alpha (0.8 + 0.8 \alpha_{{map}})
@@ -174,9 +165,7 @@ R = \log(L_{{small}}) - \log(L_{{medium}})
 L_{{enh}} = \mathrm{{clip}}(L + \Delta' \cdot G_e \cdot M_l \cdot G_c, 0, 1)
 ```
 
----
-
-## 3.6 Algorithm
+### 3.6 Algorithm
 
 **Algorithm 1: PACE Enhancement**
 
@@ -222,8 +211,6 @@ A total of **50 images** are selected, covering:
 - texture-rich natural images  
 
 All reported results correspond to the **average performance across all test images**, ensuring statistical reliability.
-
----
 
 #### Reproducibility
 
