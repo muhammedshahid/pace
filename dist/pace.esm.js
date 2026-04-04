@@ -418,6 +418,14 @@ var log = async (stage, label, payload = {}) => {
       } catch (e) {
         console.warn("Browser download failed");
       }
+    } else if (typeof self !== "undefined" && typeof self.postMessage === "function") {
+      self.postMessage({
+        type: "DEBUG_TRACE",
+        payload: {
+          json,
+          filename
+        }
+      });
     } else if (typeof process !== "undefined" && process.versions?.node) {
       try {
         const fs = await import("fs");
@@ -454,9 +462,6 @@ var log = async (stage, label, payload = {}) => {
       height: payload.input.height
     };
   }
-  console.groupCollapsed(
-    `\u{1F7E6} [PACE] ${__STAGE_INDEX__}. ${stage} \u2192 ${label} (${duration.toFixed(2)} ms)`
-  );
   if (payload.input) console.log("\u{1F539} Input:", payload.input);
   if (payload.params) console.log("\u2699\uFE0F Params:", payload.params);
   if (payload.output) console.log("\u{1F7E2} Output:", payload.output);
@@ -736,7 +741,7 @@ function computeGradient(L, width, height) {
   }
   return { gx, gy };
 }
-function computeMaps(L, gx, gy, width, height) {
+function computeMaps(L, gx, gy) {
   const n = L.length;
   const edgeMap = new Float32Array(n);
   const structureMask = new Float32Array(n);
@@ -1325,3 +1330,4 @@ export {
   PACE,
   applyPACE
 };
+//# sourceMappingURL=pace.esm.js.map

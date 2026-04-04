@@ -1,4 +1,4 @@
-import { applyPACE } from "./PACE.js";
+import { applyPACE } from "../dist/pace.esm.js";
 
 self.onmessage = async (e) => {
     const { imgData, options } = e.data;
