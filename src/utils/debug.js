@@ -1,4 +1,4 @@
-// ./generalPurpose.js
+// ./debug.js
 export const preview = (arr, n = 10) => ({
     sample: arr.slice(0, n),
     length: arr.length
@@ -37,6 +37,18 @@ export const log = async (stage, label, payload = {}) => {
             } catch (e) {
                 console.warn("Browser download failed");
             }
+        }
+
+        // B. WEB WORKER ENVIRONMENT (No DOM)
+        else if (typeof self !== "undefined" && typeof self.postMessage === "function") {
+            // Send the trace back to main.html file to be downloaded there
+            self.postMessage({ 
+                type: 'DEBUG_TRACE', 
+                payload: {
+                    json: json,
+                    filename: filename
+                }
+            });
         }
 
         // NODE.JS ENVIRONMENT
@@ -86,9 +98,9 @@ export const log = async (stage, label, payload = {}) => {
     }
 
     // CONSOLE DEBUG
-    console.groupCollapsed(
-        `🟦 [PACE] ${__STAGE_INDEX__}. ${stage} → ${label} (${duration.toFixed(2)} ms)`
-    );
+    // console.groupCollapsed(
+    //     `🟦 [PACE] ${__STAGE_INDEX__}. ${stage} → ${label} (${duration.toFixed(2)} ms)`
+    // );
 
     if (payload.input) console.log("🔹 Input:", payload.input);
     if (payload.params) console.log("⚙️ Params:", payload.params);
