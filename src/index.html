@@ -2,601 +2,567 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>PACE-Framework-OkLab</title>
-
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PACE | Research Demo</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=JetBrains+Mono&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css">
     <style>
-        html {
-            font-size: 100%;
-            /* or 90%, 112.5%, etc */
+        :root {
+            --bg-dark: #090c10;
+            --card-dark: #0d1117;
+            --accent-cyan: #00f2ff;
+            --options: #ffb300;
+            --border-color: #30363d;
+            --text-muted: #99c8f9;
+            /*#8b949e*/
+            --text-white: #c9d1d9;
+            --bs-secondary-color: rgb(115 130 145 / 75%) !important;
         }
 
         body {
-            font-family: Arial, sans-serif;
-            background: #111;
-            color: white;
+            background-color: var(--bg-dark);
+            color: var(--text-white);
+            font-family: 'Inter', sans-serif;
+            min-height: 100vh;
+        }
+
+        .navbar {
+            background-color: var(--card-dark);
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .card {
+            background-color: var(--card-dark);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            margin-bottom: 1.5rem;
+        }
+
+        .card-title {
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--text-muted);
+            font-weight: 800;
+        }
+
+        /* --- Drag & Drop Zone --- */
+        #drop-zone {
+            border: 2px dashed var(--border-color);
+            border-radius: 12px;
+            padding: 2rem;
             text-align: center;
-            padding: 1.25rem;
-            font-size: 1rem;
-        }
-
-        h1 {
-            font-size: 1.25rem;
-            margin-bottom: 1.25rem;
-        }
-
-        input {
-            margin: 0 auto;
-            display: block;
-        }
-
-        #comparison-wrapper {
-            position: relative;
-            display: inline-block;
-            margin-top: 1.25rem;
-            max-width: 90%;
-            overflow: hidden;
-            border-radius: 0.625rem;
-            box-shadow: 0 0.625rem 1.875rem rgba(0, 0, 0, 0.5);
-        }
-
-        canvas {
-            display: block;
-            max-width: 100%;
-            height: auto;
-        }
-
-        #processedCanvas {
-            position: absolute;
-            top: 0;
-            left: 0;
-            clip-path: inset(0 50% 0 0);
-        }
-
-        input[type="file"] {
-            display: none;
-        }
-
-        .custom-upload {
-            display: block;
-            margin: 0 auto 1.2em;
-            width: fit-content;
-            padding: 0.6em 1.6em;
-            font-size: 0.95rem;
-            font-weight: 500;
-            color: #ffffff;
+            color: #007dff;
+            transition: all 0.3s ease;
+            background: rgba(255, 255, 255, 0.02);
             cursor: pointer;
-
-            background: rgba(255, 255, 255, 0.06);
-            backdrop-filter: blur(14px);
-            -webkit-backdrop-filter: blur(14px);
-
-            border: 1px solid rgba(0, 255, 255, 0.25);
-            border-radius: 2em;
-
-            box-shadow:
-                0 0.5em 1.5em rgba(0, 0, 0, 0.5),
-                0 0 1em rgba(0, 255, 255, 0.15),
-                /* subtle cyan glow */
-                inset 0 0 0.6em rgba(255, 255, 255, 0.05);
-
-            transition: all 0.25s ease;
         }
 
-        .custom-upload:hover {
-            background: rgba(0, 255, 255, 0.08);
-            border: 1px solid rgba(0, 255, 255, 0.5);
-
-            box-shadow:
-                0 0.8em 2em rgba(0, 0, 0, 0.6),
-                0 0 1.6em rgba(0, 255, 255, 0.35),
-                inset 0 0 0.8em rgba(255, 255, 255, 0.08);
-
-            transform: translateY(-0.08em);
+        #drop-zone.dragover {
+            border-color: var(--accent-cyan);
+            background: rgba(0, 242, 255, 0.05);
         }
 
-        .custom-upload:active {
-            transform: scale(0.97);
+        .text-options {
+            color: var(--options);
+            font-weight: 600;
         }
 
-
-        #slider {
-            position: absolute;
-            top: 0;
-            bottom: 0;
-            left: 50%;
-            width: 0.1875rem;
-            background: #00ffff;
+        /* --- Visualizer Slider System --- */
+        .comparison-wrapper {
+            position: relative;
+            width: 100%;
+            /* Ensure the wrapper respects the aspect ratio of the loaded image */
+            display: inline-block;
+            overflow: hidden;
+            border-radius: 8px;
+            background: #000;
             cursor: ew-resize;
             touch-action: none;
         }
 
-        /* Add ripple animation */
-        @keyframes sliderRipple {
-            0% {
-                transform: translateY(-50%) scale(1);
-                opacity: 0.6;
-            }
-
-            70% {
-                transform: translateY(-50%) scale(1.8);
-                opacity: 0;
-            }
-
-            100% {
-                transform: translateY(-50%) scale(1.8);
-                opacity: 0;
-            }
-        }
-
-        #slider::before {
-            content: "";
-            position: absolute;
-            top: 50%;
-            left: -0.7em;
-            width: 1.75em;
-            height: 1.75em;
-            background: #00ffff;
-            border-radius: 50%;
-            transform: translateY(-50%);
-            z-index: 2;
-        }
-
-        /* Add ripple layer */
-        #slider::after {
-            content: "";
-            position: absolute;
-            top: 50%;
-            left: -0.7em;
-            width: 1.75em;
-            height: 1.75em;
-            background: #00ffff;
-            border-radius: 50%;
-            transform: translateY(-50%);
-            animation: sliderRipple 1.5s infinite;
-            z-index: 1;
-        }
-
-        .label {
-            position: absolute;
-            top: 0.625rem;
-            font-size: 0.875rem;
-            background: rgba(0, 0, 0, 0.6);
-            padding: 0.3125rem 0.625rem;
-            border-radius: 0.3125rem;
-        }
-
-        #label-original {
-            left: 0.625rem;
-        }
-
-        #label-processed {
-            right: 0.625rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            /* Space between text and icon */
-            padding: 4px 12px;
-            /* Adjust padding to fit the icon */
-        }
-
-        #downloadBtn {
-            background: transparent;
-            border: none;
-            color: inherit;
-            /* Inherits the label's text color */
-            cursor: pointer;
-            padding: 0;
-            display: flex;
-            align-items: center;
-            opacity: 0.6;
-            transition: opacity 0.2s ease, transform 0.2s ease;
-        }
-
-        #downloadBtn:hover {
-            opacity: 1;
-            transform: translateY(1px);
-            /* Subtle click-like movement */
-        }
-
-        #downloadBtn svg {
-            width: 16px;
-            /* Scaled down to match font size */
-            height: 16px;
-        }
-
-        .meta-box {
-            position: absolute;
-            bottom: 0.9375rem;
-            left: 50%;
-            transform: translateX(-50%);
-            background: rgba(0, 0, 0, 0.65);
-            padding: 0.5rem 1rem;
-            font-size: 0.8125rem;
-            border-radius: 1.25rem;
-
-            display: flex;
-            gap: 1.25rem;
-            align-items: center;
-
-            white-space: nowrap;
-            max-width: 90%;
-            overflow-x: auto;
-            scrollbar-width: none;
-        }
-
-        .meta-box::-webkit-scrollbar {
-            display: none;
-        }
-
-        .toast {
-            position: fixed;
-            bottom: 2em;
-            left: 50%;
-            transform: translateX(-50%);
-            padding: 0.8em 1.6em;
-            font-size: 0.9rem;
-            color: #fff;
-
-            background: rgba(0, 255, 255, 0.12);
-            backdrop-filter: blur(12px);
-            border: 1px solid rgba(0, 255, 255, 0.4);
-            border-radius: 2em;
-
-            box-shadow: 0 0 1.2em rgba(0, 255, 255, 0.3);
-
-            opacity: 0;
-            pointer-events: none;
-            transition: all 0.3s ease;
-        }
-
-        .toast.show {
-            opacity: 1;
-            bottom: 3em;
-        }
-
-        .global-processing {
-            position: fixed;
-            inset: 0;
-
-            display: flex;
-            align-items: center;
-            justify-content: center;
-
-            background: rgba(0, 0, 0, 0.35);
-            backdrop-filter: blur(4px);
-
-            opacity: 0;
-            pointer-events: none;
-            transition: opacity 0.25s ease;
-            z-index: 9999;
-        }
-
-        .global-processing.active {
-            opacity: 1;
-            pointer-events: all;
-        }
-
-        .global-spinner {
-            width: 2.8em;
-            height: 2.8em;
-            border: 0.25em solid rgba(0, 255, 255, 0.2);
-            border-top: 0.25em solid #00ffff;
-            border-radius: 50%;
-            animation: spin 0.8s linear infinite;
-        }
-
-        @keyframes spin {
-            to {
-                transform: rotate(360deg);
-            }
-        }
-
-        .font-12 {
-            font-size: 0.75rem;
-        }
-
-        .img-container {
-            position: relative;
+        .comparison-wrapper canvas {
+            display: block;
+            /* This ensures responsiveness while maintaining alignment */
             width: 100%;
             height: auto;
-            margin: 10px auto;
-            border-radius: 5px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            overflow: hidden;
         }
 
-        .img-container::before {
-            content: "";
+        #canvas-after {
             position: absolute;
             top: 0;
             left: 0;
-            right: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 2;
+            clip-path: inset(0 50% 0 0);
+        }
+
+        #canvas-before {
+            position: relative;
+            z-index: 1;
+        }
+
+        #slider-line {
+            position: absolute;
+            top: 0;
             bottom: 0;
-            transform: scale(1.1);
-            z-index: -1;
-            background-image: radial-gradient(circle, rgb(25, 25, 25) 0%, rgb(17, 17, 17) 100%);
-            backdrop-filter: blur(13px);
-            -webkit-backdrop-filter: blur(15px);
+            left: 50%;
+            width: 2px;
+            background: var(--accent-cyan);
+            z-index: 10;
+            pointer-events: none;
+            box-shadow: 0 0 10px rgba(0, 242, 255, 0.5);
         }
 
-        .img-container img {
-            max-width: 100%;
-            max-height: 100%;
-            object-fit: cover;
-            /* Crops the image to fill the box without distortion */
+        #slider-line::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 32px;
+            height: 32px;
+            background: var(--accent-cyan);
+            border-radius: 50%;
+            border: 4px solid var(--card-dark);
+            box-shadow: 0 0 15px rgba(0, 242, 255, 0.4);
         }
 
-        @media (min-width: 768px) {
-            .img-container img {
-                max-width: 85%;
-                max-height: 85%;
-            }
+        .label-overlay {
+            position: absolute;
+            top: 10px;
+            padding: 4px 10px;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(4px);
+            font-size: 0.7rem;
+            font-weight: 800;
+            letter-spacing: 1px;
+            border-radius: 4px;
+            pointer-events: none;
+            z-index: 11;
         }
 
-        .drop-zone-container {
-            border: 2px dashed rgba(0, 255, 255, 0.2);
-            border-radius: 1.25rem;
-            padding: 2rem;
-            margin: 1.25rem auto;
-            max-width: 400px;
-            transition: all 0.3s ease;
-            background: rgba(255, 255, 255, 0.02);
+        .label-orig {
+            left: 10px;
+            color: var(--text-muted);
         }
 
-        /* State when a file is being dragged over the zone */
-        .drop-zone-container.drag-over {
-            background: rgba(0, 255, 255, 0.05);
-            border-color: #00ffff;
-            box-shadow: 0 0 20px rgba(0, 255, 255, 0.2);
-            transform: scale(1.02);
+        .label-pace {
+            right: 10px;
+            color: var(--accent-cyan);
+        }
+
+        /* --- Standard Controls --- */
+        .hist-canvas {
+            height: 120px;
+            width: 100%;
+        }
+
+        .form-check-input:checked {
+            background-color: var(--options);
+            border-color: var(--options);
+        }
+
+        .form-range::-webkit-slider-thumb {
+            background: var(--options);
+        }
+
+        .btn-pace {
+            background: var(--options);
+            color: #000;
+            font-weight: 700;
+            border: none;
+        }
+
+        .btn-pace:hover {
+            background: #00d8e6;
+        }
+
+        .mono {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85rem;
         }
     </style>
 </head>
 
 <body>
 
-    <h1>PACE – Perceptual Adaptive Contrast Enhancement</h1>
-    <p class="font-12">
-        Intelligently enhances contrast by adapting to image texture, edges, and noise — enhaning detail while avoiding
-        noise amplification. Below diagram shows the working of PACE framework.
-    </p>
-
-
-    <div class="img-container">
-        <img src="./imgs/fig-1.png" alt="">
-    </div>
-
-    <!-- <label for="fileInput" class="custom-upload">Choose Image</label>
-    <input type="file" id="fileInput" accept="image/*"> -->
-    <div id="drop-zone" class="drop-zone-container">
-        <label for="fileInput" class="custom-upload">Choose Image or Drag & Drop</label>
-        <input type="file" id="fileInput" accept="image/*">
-        <p class="font-12" style="margin-top: -0.5rem; opacity: 0.6;">Supports: JPG, PNG, WebP</p>
-    </div>
-
-    <div id="comparison-wrapper" style="display:none;">
-        <canvas id="originalCanvas"></canvas>
-        <canvas id="processedCanvas"></canvas>
-
-        <div id="slider"></div>
-        <div id="label-original" class="label">Original</div>
-        <div id="label-processed" class="label">
-            PACE.js
-            <button id="downloadBtn" title="Download Processed Image">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
-                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <circle cx="12" cy="12" r="10"></circle>
-                    <path d="M12 16v-8"></path>
-                    <path d="m8 12 4 4 4-4"></path>
-                </svg>
-            </button>
+    <nav class="navbar navbar-dark px-4 py-3">
+        <div class="container-fluid">
+            <a class="navbar-brand fw-bold" href="#">PACE <span style="color: var(--accent-cyan);">DEMO <i
+                        class="fa-solid fa-tower-broadcast"></i></span>
+            </a>
+            <div class="d-flex align-items-center gap-3">
+                <span class="badge bg-dark border border-secondary mono text-info" id="version-display">v...</span>
+                <a href="https://github.com/muhammedshahid/pace" target="_blank"
+                    class="text-decoration-none text-light opacity-75 small">Documentation <i
+                        class="fa-solid fa-book"></i>
+                </a>
+            </div>
         </div>
-        <div id="meta-info" class="meta-box"></div>
+    </nav>
 
-        <div class="processing-overlay" id="processingOverlay">
-            <div class="processing-spinner"></div>
+    <div class="container-fluid p-4">
+        <div class="row g-4">
+
+            <div class="col-lg-3">
+                <div id="drop-zone" class="mb-4">
+                    <p class="mb-0 small"><i class="fa-solid fa-arrow-up-from-bracket"></i> Drag & Drop Image or
+                        <strong>Browse</strong>
+                    </p>
+                    <input type="file" id="file-input" hidden accept="image/*">
+                </div>
+
+                <div class="card p-3 text-options">
+                    <h6 class="card-title mb-3 text-options"><i class="fa-solid fa-sliders"></i> Options</h6>
+                    <div class="form-check form-switch mb-3">
+                        <input class="form-check-input" type="checkbox" id="auto-mode" checked>
+                        <label class="form-check-label small" for="auto-mode">Auto-Mode</label>
+                    </div>
+                    <div id="options">
+                        <div class="form-check form-switch mb-3">
+                            <input class="form-check-input" type="checkbox" id="debug-mode">
+                            <label class="form-check-label small" for="debug-mode">Debug (Research Analysis)</label>
+                        </div>
+                        <label class="form-label small d-flex justify-content-between">
+                            Strength <span id="strength-val" class="mono">1.0</span>
+                        </label>
+                        <input type="range" class="form-range" id="strength" min="0" max="5" step="0.1" value="1">
+                        <button class="btn btn-pace w-100 mt-4 mb-2" id="rerun-btn"><i
+                                class="fa-solid fa-arrows-rotate"></i> RERUN</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-6">
+                <div class="card p-3 h-100">
+                    <div class="card p-3 h-100 position-relative">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <h6 class="card-title m-0"><i class="fa-solid fa-magnifying-glass-chart"></i> Visual
+                                Comparison</h6>
+                            <button id="download-btn" class="btn btn-outline-pace text-info btn-sm py-0 px-2"
+                                title="Download Enhanced Image" style="display:none;">
+                                <small>DOWNLOAD</small> <i class="fa-solid fa-download"></i>
+                            </button>
+                        </div>
+
+                        <div id="progress-container" class="mb-3" style="display: none;">
+                            <div class="d-flex justify-content-between small mb-1">
+                                <span id="progress-stage" class="mono text-info"
+                                    style="font-size: 0.75rem;">Initializing...</span>
+                                <span id="progress-percent" class="mono text-muted"
+                                    style="font-size: 0.75rem;">0%</span>
+                            </div>
+                            <div class="progress" style="height: 4px; background: rgba(255,255,255,0.1);">
+                                <div id="progress-bar" class="progress-bar"
+                                    style="background: var(--accent-cyan); width: 0%; transition: width 0.2s ease;">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="comparison-wrapper" id="comparison-wrapper">
+                            <canvas id="canvas-before"></canvas>
+                            <canvas id="canvas-after"></canvas>
+                            <div id="slider-line"></div>
+                            <div class="label-overlay label-orig">ORIGINAL</div>
+                            <div class="label-overlay label-pace">PACE ENHANCED</div>
+                        </div>
+
+                        <p class="text-center text-muted small mt-3 mb-0 mono">Slide horizontally to inspect detail
+                            delta</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-3">
+                <div class="card p-3">
+                    <h6 class="card-title mb-3"><i class="fa-solid fa-chart-column"></i> Quantitative Analysis</h6>
+                    <div class="mb-4">
+                        <p class="small mono text-info mb-1"><i class="fa-solid fa-chart-simple"></i> Before Histogram
+                        </p>
+                        <canvas id="hist-before" class="hist-canvas"></canvas>
+                    </div>
+                    <hr class="border-secondary">
+                    <div>
+                        <p class="small mono text-info mb-1"><i class="fa-solid fa-chart-simple"></i> After Histogram
+                        </p>
+                        <canvas id="hist-after" class="hist-canvas"></canvas>
+                    </div>
+                    <div class="mt-3 p-2 bg-dark rounded border border-secondary">
+                        <p class="x-small text-white mb-0" style="font-size: 0.7rem; letter-spacing: 0.5px;">
+                            <span class="me-2"><i class="fa-solid fa-square me-1" style="color:#ff4b2b"></i> RED</span>
+                            <span class="me-2"><i class="fa-solid fa-square me-1" style="color:#00f260"></i>
+                                GREEN</span>
+                            <span><i class="fa-solid fa-square me-1" style="color:#0575e6"></i> BLUE</span>
+                        </p>
+                    </div>
+                </div>
+                <div class="card p-3 text-center">
+                    <h6 class="card-title mb-2"><i class="fa-solid fa-sitemap"></i> Pipeline Architecture</h6>
+                    <a href="./imgs/fig-1.png" target="_blank" class="d-block">
+                        <img src="./imgs/fig-1.png" class="img-fluid rounded border border-secondary" alt="Architecture"
+                            style="filter: invert(0.9);">
+                    </a>
+                </div>
+            </div>
+
         </div>
-
-    </div>
-
-    <div class="global-processing" id="globalProcessing">
-        <div class="global-spinner"></div>
     </div>
 
     <script type="module">
         import { applyPACE } from "./PACE.js";
         window.applyPACE = applyPACE;
     </script>
-    </script>
 
     <script>
-        // ---------- Loader Logic ----------
-        function showProcessing() {
-            document.getElementById("globalProcessing").classList.add("active");
-        }
+        // --- 1. DOM & State Management ---
+        const wrapper = document.getElementById('comparison-wrapper');
+        const sliderLine = document.getElementById('slider-line');
+        const beforeCanvas = document.getElementById('canvas-before');
+        const afterCanvas = document.getElementById('canvas-after');
+        const strengthSlider = document.getElementById('strength');
+        const debugMode = document.getElementById('debug-mode');
+        const strengthVal = document.getElementById('strength-val');
+        const autoMode = document.getElementById('auto-mode');
+        const rerunBtn = document.getElementById('rerun-btn');
+        const downloadBtn = document.getElementById('download-btn');
+        const progressContainer = document.getElementById('progress-container');
+        const progressBar = document.getElementById('progress-bar');
+        const progressStage = document.getElementById('progress-stage');
+        const progressPercent = document.getElementById('progress-percent');
+        const parametersCard = document.querySelector('.col-lg-3 .card:nth-child(2)');
+        const fileInput = document.getElementById('file-input');
+        const dropZone = document.getElementById('drop-zone');
+        const versionDisplay = document.getElementById('version-display');
 
-        function hideProcessing() {
-            document.getElementById("globalProcessing").classList.remove("active");
-        }
+        let currentImage = false;
+        let paceWorker = null;
 
-        // ---------- Toast Logic ----------
-        function notifyComplete() {
-            // Vibrate (works on supported mobile devices)
-            if (navigator.vibrate) {
-                navigator.vibrate([120, 60, 120]); // short pattern
-            }
+        // 2. File Handling
+        dropZone.onclick = () => fileInput.click();
+        dropZone.ondragover = (e) => { e.preventDefault(); dropZone.classList.add('dragover'); };
+        dropZone.ondragleave = () => dropZone.classList.remove('dragover');
+        dropZone.ondrop = (e) => {
+            e.preventDefault();
+            dropZone.classList.remove('dragover');
+            handleFile(e.dataTransfer.files[0]);
+        };
+        fileInput.onchange = (e) => handleFile(e.target.files[0]);
 
-            // showToast("Processing Complete ✅");
-            showToast("Boom! All done 🔥");
-        }
-
-        function showToast(message) {
-            let toast = document.createElement("div");
-            toast.className = "toast";
-            toast.textContent = message;
-            document.body.appendChild(toast);
-
-            requestAnimationFrame(() => toast.classList.add("show"));
-
-            setTimeout(() => {
-                toast.classList.remove("show");
-                setTimeout(() => toast.remove(), 300);
-            }, 2500);
-        }
-
-        // ---------- Slider Logic ----------
-        const slider = document.getElementById("slider");
-        const processedCanvas = document.getElementById("processedCanvas");
-        const wrapper = document.getElementById("comparison-wrapper");
-
-        let isDragging = false;
-
-        slider.addEventListener("pointerdown", (e) => {
-            isDragging = true;
-            slider.setPointerCapture(e.pointerId);
-        });
-
-        window.addEventListener("pointerup", () => {
-            isDragging = false;
-        });
-
-        window.addEventListener("pointermove", (e) => {
-            if (!isDragging) return;
-
-            const rect = wrapper.getBoundingClientRect();
-            let offset = e.clientX - rect.left;
-            offset = Math.max(0, Math.min(offset, rect.width));
-
-            const percent = (offset / rect.width) * 100;
-
-            slider.style.left = percent + "%";
-            processedCanvas.style.clipPath = `inset(0 ${100 - percent}% 0 0)`;
-        });
-
-
-        // ---------- File Handling ----------
-        const fileInput = document.getElementById("fileInput");
-        const originalCanvas = document.getElementById("originalCanvas");
-        const processedCanvasEl = document.getElementById("processedCanvas");
-        const dropZone = document.getElementById("drop-zone");
-
-        const calPerformance = {
-            canStart: true,
-            start() {
-                if (!this.canStart) return;
-                this.startTime = performance.now();
-                this.canStart = false;
-            },
-            stop() {
-                if (this.canStart) return;
-                this.endTime = performance.now();
-                this.canStart = true;
-                this.duration = ((this.endTime - this.startTime) / 1000).toFixed(3);
-                console.log(`Total processing time: ${this.duration} sec`);
-            }
-        }
-        
-        document.getElementById('downloadBtn').addEventListener('click', function () {
-            const now = new Date();
-            const timestamp = now.getFullYear() + '-' +
-                String(now.getDate() + 1).padStart(2, '0') + '-' +
-                String(now.getMonth()).padStart(2, '0') + '_' +
-                String(now.getHours()).padStart(2, '0') + '-' +
-                String(now.getMinutes()).padStart(2, '0') + '-' +
-                String(now.getSeconds()).padStart(2, '0');
-            const canvas = document.getElementById('processedCanvas');
-
-            const link = document.createElement('a');
-            link.download = `PACE-enhanced-image${timestamp}.png`;
-            link.href = canvas.toDataURL('image/png');
-
-            link.click();
-        });
-
-        // 1. Prevent default drag behaviors for the whole window
-        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
-            window.addEventListener(eventName, e => e.preventDefault(), false);
-            window.addEventListener(eventName, e => e.stopPropagation(), false);
-        });
-
-        // 2. Visual feedback for the drop zone
-        ['dragenter', 'dragover'].forEach(eventName => {
-            dropZone.addEventListener(eventName, () => dropZone.classList.add('drag-over'), false);
-        });
-
-        ['dragleave', 'drop'].forEach(eventName => {
-            dropZone.addEventListener(eventName, () => dropZone.classList.remove('drag-over'), false);
-        });
-
-        // 3. Handle dropped files
-        dropZone.addEventListener('drop', (e) => {
-            const dt = e.dataTransfer;
-            const file = dt.files[0];
-            if (file && file.type.startsWith('image/')) {
-                processFile(file);
-            }
-        });
-
-        // 4. Handle input-selected files
-        fileInput.addEventListener("change", (e) => {
-            const file = e.target.files[0];
-            if (file) processFile(file);
-        });
-
-        // 5. Consolidated processing logic
-        function processFile(file) {
-            showProcessing();
+        function handleFile(file) {
+            if (!file || !file.type.startsWith('image/')) return;
             const reader = new FileReader();
-            reader.onload = ({ target }) => {
+            reader.onload = (e) => {
                 const img = new Image();
-                img.onload = async () => {
-                    const wrapper = document.getElementById("comparison-wrapper");
-                    wrapper.style.display = "inline-block";
+                img.onload = () => {
+                    // Set full natural dimensions
+                    beforeCanvas.width = afterCanvas.width = img.naturalWidth;
+                    beforeCanvas.height = afterCanvas.height = img.naturalHeight;
 
-                    const originalCanvas = document.getElementById("originalCanvas");
-                    const processedCanvasEl = document.getElementById("processedCanvas");
+                    const ctx = beforeCanvas.getContext('2d');
+                    ctx.drawImage(img, 0, 0);
 
-                    originalCanvas.width = processedCanvasEl.width = img.width;
-                    originalCanvas.height = processedCanvasEl.height = img.height;
-
-                    const ctxOriginal = originalCanvas.getContext("2d");
-                    const ctxProcessed = processedCanvasEl.getContext("2d");
-
-                    ctxOriginal.drawImage(img, 0, 0);
-                    ctxProcessed.drawImage(img, 0, 0);
-
-                    const imgData = ctxProcessed.getImageData(0, 0, img.width, img.height);
-
-                    calPerformance.start();
-                    // Applying the PACE framework processing
-                    const result = await applyPACE(imgData, { debug: false });
-                    calPerformance.stop();
-
-                    ctxProcessed.putImageData(result, 0, 0);
-
-                    // Reset UI elements
-                    const slider = document.getElementById("slider");
-                    slider.style.left = "50%";
-                    processedCanvasEl.style.clipPath = "inset(0 50% 0 0)";
-
-                    document.getElementById("meta-info").innerHTML = `
-                    <span><strong>Time:</strong> ${calPerformance.duration}sec</span>
-                    `;
-
-                    hideProcessing();
-                    notifyComplete();
+                    currentImage = true;
+                    runPace();
                 };
-                img.src = target.result;
+                img.src = e.target.result;
             };
             reader.readAsDataURL(file);
         }
-    </script>
 
+        // 3. Histogram Rendering
+        function renderHist(srcId, targetId) {
+            const src = document.getElementById(srcId);
+            const target = document.getElementById(targetId);
+            const ctx = src.getContext('2d', { willReadFrequently: true });
+            const tCtx = target.getContext('2d');
+            const data = ctx.getImageData(0, 0, src.width, src.height).data;
+
+            const bins = { r: new Array(256).fill(0), g: new Array(256).fill(0), b: new Array(256).fill(0) };
+
+            for (let i = 0; i < data.length; i += 4) {
+                bins.r[data[i]]++;
+                bins.g[data[i + 1]]++;
+                bins.b[data[i + 2]]++;
+            }
+
+            tCtx.clearRect(0, 0, target.width, target.height);
+            const max = Math.max(...bins.r, ...bins.g, ...bins.b);
+
+            const drawLine = (channel, color) => {
+                tCtx.strokeStyle = color;
+                tCtx.lineWidth = 1;
+                tCtx.beginPath();
+                for (let i = 0; i < 256; i++) {
+                    const x = (i / 255) * target.width;
+                    const y = target.height - (channel[i] / max) * target.height;
+                    i === 0 ? tCtx.moveTo(x, y) : tCtx.lineTo(x, y);
+                }
+                tCtx.stroke();
+            };
+
+            drawLine(bins.r, '#ff4b2b');
+            drawLine(bins.g, '#00f260');
+            drawLine(bins.b, '#0575e6');
+        }
+
+        function updateHistograms() {
+            renderHist('canvas-before', 'hist-before');
+            renderHist('canvas-after', 'hist-after');
+        }
+
+
+        // --- 4. Web Worker Lifecycle ---
+        function initWorker() {
+            // If a worker is currently running, terminate it to free up resources
+            if (paceWorker) {
+                paceWorker.terminate();
+            }
+
+            paceWorker = new Worker('./pace-worker.js', { type: 'module' });
+
+            paceWorker.onmessage = (e) => {
+                const { type, data, error } = e.data;
+
+                if (type === 'PROGRESS') {
+                    updateUIProgress(data);
+                } else if (type === 'DONE') {
+                    const ctxProcessed = afterCanvas.getContext('2d');
+                    // 'data' here is the processed ImageData returned from the worker
+                    ctxProcessed.putImageData(data, 0, 0);
+
+                    // Trigger quantitative analysis update after pixel-crunching is done
+                    if (typeof updateHistograms === 'function') updateHistograms();
+
+                    setProcessingState(false);
+                } else if (type === 'ERROR') {
+                    console.error("PACE Worker Error:", error);
+                    setProcessingState(false);
+                    alert("An error occurred during image processing.");
+                }
+            };
+        }
+
+        // --- 5. Core Processing Logic ---
+        async function runPace() {
+            // Check 'currentImage' instead of canvas data to ensure have a valid source
+            if (!currentImage) return;
+
+            // Always re-initialize or ensure worker is ready to prevent stalled states
+            initWorker();
+
+            setProcessingState(true);
+
+            const ctxOriginal = beforeCanvas.getContext('2d');
+
+            /** * CRITICAL: fetch fresh ImageData here. 
+             * Even if rerun, need a new buffer because the previous one was 
+             * transferred (detached) to the worker.
+             */
+            const imgData = ctxOriginal.getImageData(0, 0, beforeCanvas.width, beforeCanvas.height);
+
+            const options = {
+                strength: parseFloat(strengthSlider.value),
+                auto: autoMode.checked
+            };
+
+            // Performance Optimization: Transfer the buffer to avoid cloning large arrays
+            paceWorker.postMessage({ imgData, options }, [imgData.data.buffer]);
+        }
+
+        // --- 6. UI State Helpers ---
+        function updateUIProgress(progress) {
+            const percent = Math.round(progress.progressPercent || 0);
+            progressBar.style.width = `${percent}%`;
+            progressPercent.innerText = `${percent}%`;
+            progressStage.innerHTML = `<i class="fa-solid fa-circle-notch fa-spin"></i> ${progress.stage || '<i class="fa-solid fa-circle-notch fa-spin"></i> Processing...'}`;
+        }
+
+        function setProcessingState(isProcessing) {
+            // Toggle progress visibility
+            progressContainer.style.display = isProcessing ? 'block' : 'none';
+
+            // Lock/Unlock analysis buttons
+            rerunBtn.disabled = isProcessing;
+            rerunBtn.innerHTML = isProcessing ? `<i class="fa-solid fa-magnifying-glass-chart"></i> PROCESSING...` : `<i class="fa-solid fa-arrows-rotate"></i> RERUN`;
+
+            // Disable the entire parameters card to prevent mid-process interference
+            parametersCard.style.pointerEvents = isProcessing ? 'none' : 'auto';
+            parametersCard.style.opacity = isProcessing ? '0.6' : '1';
+
+            if (isProcessing) {
+                downloadBtn.style.display = 'none';
+                progressBar.style.width = '0%';
+                progressStage.innerHTML = `<i class="fa-solid fa-gears"></i> Initializing...`;
+            } else {
+                downloadBtn.style.display = 'block';
+            }
+        }
+
+        // --- 7. Slider & Comparison Interaction ---
+        let isDragging = false;
+        function updateSlider(e) {
+            const rect = wrapper.getBoundingClientRect();
+            const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+
+            let x = clientX - rect.left;
+            x = Math.max(0, Math.min(x, rect.width));
+            const percent = (x / rect.width) * 100;
+
+            sliderLine.style.left = `${percent}%`;
+            // Pure CSS clipping for zero-lag visual comparison
+            afterCanvas.style.clipPath = `inset(0 ${100 - percent}% 0 0)`;
+        }
+
+        // --- 8. Download Logic ---
+        downloadBtn.onclick = () => {
+            const timestamp = new Date().toISOString().replace(/[:.]/g, '-').slice(0, 19);
+            const link = document.createElement('a');
+            link.download = `PACE_Enhanced_${timestamp}.png`;
+            link.href = afterCanvas.toDataURL('image/png');
+            link.click();
+        };
+
+        // --- 9. Initialization & Listeners ---
+        rerunBtn.onclick = () => runPace();
+
+        strengthSlider.oninput = () => {
+            strengthVal.innerText = parseFloat(strengthSlider.value).toFixed(1);
+        };
+
+        autoMode.onchange = () => {
+            strengthSlider.disabled = autoMode.checked;
+            debugMode.checked = !autoMode.checked;
+            debugMode.disabled = autoMode.checked;
+            strengthSlider.parentElement.style.opacity = autoMode.checked ? 0.5 : 1;
+        };
+
+        // --- 10. Load Repository Version ---
+        fetch('https://raw.githubusercontent.com/muhammedshahid/pace/main/package.json')
+            .then(res => res.json())
+            .then(data => versionDisplay.innerText = `v${data.version}`)
+            .catch(() => versionDisplay.innerText = 'v1.0.0');
+
+        // Init UI
+        strengthSlider.disabled = true;
+        debugMode.disabled = true;
+        strengthSlider.parentElement.style.opacity = 0.5;
+
+        // Improved Pointer Events for better tablet/mobile support
+        wrapper.addEventListener('pointerdown', (e) => {
+            isDragging = true;
+            wrapper.setPointerCapture(e.pointerId);
+            updateSlider(e);
+        });
+        window.addEventListener('pointerup', () => isDragging = false);
+        window.addEventListener('pointermove', (e) => {
+            if (isDragging) updateSlider(e);
+        });
+    </script>
 </body>
 
 </html>
