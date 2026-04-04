@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ---
 
+## [unreleased]
+
+### [3.1.0] - 2026-04-04
+- Demo UI Updated, better UI & simple WebWorker implementation.
+
+---
+
+---
+
 ## [3.0.0] - 2026-03-28
 
 ### 🚀 Added
