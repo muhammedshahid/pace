@@ -6,7 +6,7 @@ authors:
   - given-names: Mohd
     family-names: Shahid
     affiliation: "Independent Researcher"
-version: "v3.0.0"
+version: "v3.1.0"
 date-released: "2026-03-28"
 license: MIT
 repository-code: "https://github.com/muhammedshahid/pace"
@@ -20,6 +20,7 @@ keywords:
   - adaptive-contrast
   - clahe
   - retinex
+  - lime
   - javascript
   - browser
   - cli-tool
