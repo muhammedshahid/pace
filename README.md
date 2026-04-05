@@ -143,7 +143,7 @@ options = {
 ### 🌐 1. Browser (CDN / Global Script)
 
 ```html
-<script src="https://cdn.jsdelivr.net/gh/muhammedshahid/pace@v3.1.0/dist/pace.min.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/muhammedshahid/pace@v3.1.1/dist/pace.min.js"></script>
 <script>
   const enhanced = PACE.enhance(imageData, options, (p) => console.log(p));
 </script>
@@ -155,7 +155,7 @@ options = {
 
 ```html
 <script type="module">
-  import { PACE, applyPACE } from "https://cdn.jsdelivr.net/gh/muhammedshahid/pace@v3.1.0/dist/pace.esm.js";
+  import { PACE, applyPACE } from "https://cdn.jsdelivr.net/gh/muhammedshahid/pace@v3.1.1/dist/pace.esm.js";
 
   const output = await applyPACE(imageData, options, (p) => console.log(p));
   // OR
@@ -682,7 +682,7 @@ pace/
   author = {Shahid, Mohd},
   title = {PACE: Perceptual Adaptive Contrast Enhancement},
   year = {2026},
-  version = {3.1.0},
+  version = {3.1.1},
   publisher = {Zenodo},
   doi = {10.5281/zenodo.19203394},
   url = {https://doi.org/10.5281/zenodo.19203394}
