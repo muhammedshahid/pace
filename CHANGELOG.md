@@ -7,12 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ---
 
-## [unreleased]
-
 ### [3.1.0] - 2026-04-04
 - Demo UI Updated, better UI & simple WebWorker implementation.
 - utils/debug.js now has web worker support for browser also to download debug trace.
-- rebuild required
 
 ---
 
