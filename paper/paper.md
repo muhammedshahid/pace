@@ -9,7 +9,7 @@ PACE (Perceptual Adaptive Contrast Enhancement) is a lightweight, fully adaptive
 | Field                | Description  |
 | -------------------- | -------------------------------------------------------------------------------- |
 | Software name        | PACE (Perceptual Adaptive Contrast Enhancement)  |
-| Version              | v3.0.0 |
+| Version              | v3.1.1 |
 | Repository           | [https://github.com/muhammedshahid/pace](https://github.com/muhammedshahid/pace) |
 | DOI                  | 10.5281/zenodo.19203394  |
 | License              | MIT License  |

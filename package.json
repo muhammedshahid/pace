@@ -1,37 +1,40 @@
 {
   "name": "@shahid/pace",
-  "version": "3.1.0",
+  "version": "3.1.1",
   "description": "Perceptual Adaptive Contrast Enhancement (PACE): A fully adaptive image enhancement framework for improving visual quality while preserving structural fidelity.",
   "type": "module",
-  "main": "dist/pace.cjs.js",
-  "module": "dist/pace.esm.js",
+  "main": "./dist/pace.cjs",
+  "module": "./dist/pace.esm.js",
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
-      "require": "./dist/pace.cjs.js",
       "import": "./dist/pace.esm.js",
+      "require": "./dist/pace.cjs",
       "default": "./dist/pace.esm.js"
     }
   },
   "bin": {
     "pace": "./cli/index.js"
   },
-  "devDependencies": {
-    "esbuild": "^0.27.4",
-    "eslint": "^10.1.0"
-  },
+  "sideEffects": false,
+  "files": [
+    "dist",
+    "cli",
+    "README.md",
+    "LICENSE"
+  ],
   "scripts": {
     "start": "node cli/index.js",
     "test": "node --test",
     "example": "node examples/basic.js",
     "lint": "eslint src cli examples tests",
     "lint:fix": "eslint src cli examples tests --fix",
+    "clean": "rimraf dist",
     "build": "npm run build:esm && npm run build:cjs && npm run build:cdn",
     "build:esm": "esbuild src/index.js --bundle --format=esm --sourcemap --outfile=dist/pace.esm.js",
-    "build:cjs": "esbuild src/index.js --bundle --format=cjs --platform=node --outfile=dist/pace.cjs.js",
+    "build:cjs": "esbuild src/index.js --bundle --format=cjs --platform=node --outfile=dist/pace.cjs",
     "build:cdn": "esbuild src/index.js --bundle --minify --format=iife --global-name=PACE --outfile=dist/pace.min.js",
     "build:watch": "npm run build -- --watch",
-    "clean": "rm -rf dist",
     "prepare": "npm run build"
   },
   "keywords": [
@@ -44,18 +47,8 @@
     "image-quality",
     "oklab",
     "perceptual",
-    "npm",
     "cli",
-    "image-processing-library",
     "javascript"
-  ],
-  "files": [
-    "dist",
-    "cli",
-    "src",
-    "package.json",
-    "README.md",
-    "LICENSE"
   ],
   "author": "Mohd. Shahid",
   "license": "MIT",
@@ -67,13 +60,15 @@
     "url": "https://github.com/muhammedshahid/pace/issues"
   },
   "homepage": "https://github.com/muhammedshahid/pace#readme",
-  "optionalDependencies": {
-    
-  },
   "engines": {
     "node": ">=18"
   },
   "dependencies": {
     "sharp": "^0.33.0"
+  },
+  "devDependencies": {
+    "esbuild": "^0.27.4",
+    "eslint": "^10.1.0",
+    "rimraf": "^6.1.3"
   }
 }
