@@ -7,6 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ---
 
+### [3.1.1] - 2026-04-05
+### Fixes
+- Fixed Node.js compatibility issue by correctly using `.cjs` extension for CommonJS builds
+- Resolved ESM/CJS interop errors affecting `require()` usage
+
+### Improvements
+- Introduced `rimraf` for reliable cross-platform cleanup during builds
+
+---
+
+---
+
 ### [3.1.0] - 2026-04-04
 - Demo UI Updated, better UI & simple WebWorker implementation.
 - utils/debug.js now has web worker support for browser also to download debug trace.
