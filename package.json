@@ -38,7 +38,6 @@
     "image-processing",
     "image-enhancement",
     "contrast-enhancement",
-    "lime",
     "clahe",
     "low-light",
     "computer-vision",
@@ -69,9 +68,12 @@
   },
   "homepage": "https://github.com/muhammedshahid/pace#readme",
   "optionalDependencies": {
-    "sharp": "^0.33.0"
+    
   },
   "engines": {
     "node": ">=18"
+  },
+  "dependencies": {
+    "sharp": "^0.33.0"
   }
 }

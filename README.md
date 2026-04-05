@@ -85,38 +85,103 @@ For more detailed visual comparisons, see
 
 ---
 
-## 🌐 Browser Usage (No Installation)
+## 🌐 Programmatic Usage
 
-PACE works in **browser (CDN)**, **ES Modules**, and **Node (CommonJS)**.
+PACE works in **browser (CDN)**, **ES Modules (ESM)**, and **Node.js (CommonJS)**.
 
 ### 🚀 Try Live Demo
 👉 **[Open Demo](https://muhammedshahid.github.io/pace/src/)**
 
+> The demo includes a simple **Web Worker implementation** to run PACE off the main thread, ensuring smooth UI performance.
+
 ---
+
+## 🧠 General API
+
+### `PACE.enhance(imageData, options?, progressCallback?)`
+> Alias: `applyPACE(imageData, options?, progressCallback?)`
+
+Enhances an image using the PACE algorithm.
+
+- **imageData**: `ImageData` (RGBA)
+- **options** *(optional)*: Configuration object
+- **progressCallback** *(optional)*: Function to track processing progress
+
+### ❔ options
+
+```js
+options = {
+  strength: Number, // range [1, 5]
+  debug: Boolean,
+  config: JSON 
+}
+```
+
+> 🔗 See [Options](#options) for available parameters.
+
+#### 🔄 progressCallback
+
+```js
+(progress) => {
+  // progressObject
+  // {
+  //   stage: "Compute Params",
+  //   index: 3,
+  //   total: 7,
+  //   time: 0.6,
+  //   progressPercent: 42.85
+  // }
+}
+```
+
+> 💡 Useful for UI loaders and progress bars
+
+---
+
+## ⚡ Usage Examples
 
 ### 🌐 1. Browser (CDN / Global Script)
 
 ```html
-<script src="https://cdn.jsdelivr.net/gh/muhammedshahid/pace@main/dist/pace.min.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/muhammedshahid/pace@v3.1.0/dist/pace.min.js"></script>
+<script>
+  const enhanced = PACE.enhance(imageData, options, (p) => console.log(p));
+</script>
 ```
 
-```js
-const enhanced = PACE.enhance(imageData, options);
-```
+---
 
-### 📦 2. ES Modules (Native Browser)
+### 🌐 2. Native Browser (ES Modules)
 
 ```html
-<script type="module"> 
-  import { PACE, applyPACE } from "https://cdn.jsdelivr.net/gh/muhammedshahid/pace@main/dist/pace.esm.js";
-  const output = await applyPACE(imageData, options); 
-  <!-- 
-    const output = await PACE.enhance(imageData, options);
-  -->
-  </script>
+<script type="module">
+  import { PACE, applyPACE } from "https://cdn.jsdelivr.net/gh/muhammedshahid/pace@v3.1.0/dist/pace.esm.js";
+
+  const output = await applyPACE(imageData, options, (p) => console.log(p));
+  // OR
+  const output2 = await PACE.enhance(imageData, options, (p) => console.log(p));
+</script>
 ```
 
-> 🔗 See [Options](#options) for available parameters.
+---
+
+### 📦 3. Node.js (ES Modules)
+
+```js
+import { PACE } from "@shahid/pace";
+
+const output = await PACE.enhance(imageData, options, (p) => console.log(p));
+```
+
+---
+
+### 📦 4. Node.js (CommonJS)
+
+```js
+const { PACE } = require("@shahid/pace");
+
+const output = await PACE.enhance(imageData, options, (p) => console.log(p));
+```
 
 ---
 
@@ -125,13 +190,13 @@ const enhanced = PACE.enhance(imageData, options);
 ### Install globally (CLI)
 
 ```bash
-npm install -g pace
+npm install -g @shahid/pace
 ```
 
 ### Install locally
 
 ```bash
-npm install pace
+npm install @shahid/pace
 ```
 
 > ⚠️ **Note:** Ensure the project is built before installation.
@@ -142,30 +207,6 @@ npm install pace
 > ```
 >
 > This requires `esbuild` (version `^0.27.4`) as a dependency.
-
----
-
-## ⚡ Quick Start
-
-### 📦 ES Modules (Bundler / Node.js)
-
-```js
-import { applyPACE } from "pace";
-
-// imageData: ImageData object
-const output = await applyPACE(imageData, options);
-```
-
-OR
-
-```js
-import { PACE } from "pace";
-
-// imageData: ImageData object
-const output = await PACE.enhance(imageData, options);
-```
-
-> 🔗 See [Options](#options) for available CLI parameters.
 
 ---
 
@@ -182,6 +223,13 @@ pace <input> <output> [options]
 - `--config <file>` → Load JSON config for reproducibility
 - `--help` → Show help
 - `--version` → Show version
+
+> ⚠️ **Note:** The following options are available **only in the CLI** and are not applicable when using PACE programmatically:
+
+- `--help` → Show help  
+- `--version` → Show version
+
+---
 
 ### Examples
 
@@ -200,6 +248,7 @@ PACE supports reproducible experiments via JSON config:
 
 ```json
 {
+  "debug": true,
   "strength": 1.0,
   "override": {
     "controlParams": {
@@ -219,42 +268,101 @@ PACE supports reproducible experiments via JSON config:
 
 ### 🔹 Control Parameters
 
-- **tileSize**  
-  Defines the local region size for CLAHE-based enhancement.
-  Smaller values → finer local contrast; larger values → smoother enhancement.
+- **tileSize**: Local region size for CLAHE
+- **clipLimit**: Prevents over-amplification
+- **globalAlpha (α)**: Overall enhancement strength
 
-- **clipLimit**  
-  Controls histogram clipping to prevent over-amplification.
-  Higher values → stronger contrast; lower values → reduced noise amplification.
-
-- **globalAlpha (α)**  
-  Global enhancement factor derived from **contrast demand, structural confidence, and luminance imbalance**.  
-  It regulates the overall strength of enhancement.
-  Higher values → stronger enhancement.
-
+> globalAlpha(α) derived from **contrast demand, structural confidence, and luminance imbalance**. It regulates the overall strength of enhancement. Higher values, stronger enhancement.
 
 ### 🔹 Perceptual Parameters
 
-- **lambda (λ) — Stability Regulator**  
-  Controls nonlinear contrast compression based on **contrast strength and noise energy**. Prevents unstable amplification in high-noise or high-contrast regions.
-
-- **beta (β) — Highlight Protection**  
-  Modulates enhancement in bright regions based on **luminance distribution skewness and highlight dominance**, preventing saturation and detail loss.
-
-- **tau (τ) — Tone Limiter**  
-  Limits enhancement in low-contrast regions to avoid excessive amplification and noise boosting.
-
-- **edgeStabilizer (k) — Edge Stability Control**  
-  Regulates edge enhancement stability based on noise level
-  Higher noise → stronger stabilization → reduced artifacts near edges.
-
+- **lambda (λ)**: Stability regulator
+> Controls nonlinear contrast compression based on **contrast strength and noise energy**. Prevents unstable amplification in high-noise or high-contrast regions.
+- **beta (β)**: Highlight protection
+> Modulates enhancement in bright regions based on **luminance distribution skewness and highlight dominance**, preventing saturation and detail loss.
+- **tau (τ)**: Tone limiter
+> Limits enhancement in low-contrast regions to avoid excessive amplification and noise boosting.
+- **edgeStabilizer (k)**: Edge stability control
+> Regulates edge enhancement stability based on noise level. Higher noise → stronger stabilization → reduced artifacts near edges.
 
 ### 🧠 Interpretation
 
-- **Control parameters** determine the **global and local enhancement behavior**  
-- **Perceptual parameters** enforce **visual consistency and stability constraints**
+- Control parameters → global/local behavior
+- Perceptual parameters → visual consistency
 
-Unless overridden, all parameters are **automatically estimated from global image statistics**, enabling adaptive and data-driven enhancement.
+**All parameters are automatically estimated unless overridden.**
+
+---
+
+## ⚙️ Web Worker Support (Demo)
+
+The demo includes a simple **Web Worker implementation** to run PACE off the main thread, ensuring smooth UI performance.
+
+### 🚀 Try Live Demo
+👉 **[Open Demo](https://muhammedshahid.github.io/pace/src/)**
+
+> 🚀 Enables non-blocking image processing for responsive applications.
+
+### Example
+
+```js
+// main thread
+const worker = new Worker("worker.js");
+
+worker.postMessage({ imgData, options });
+
+worker.onmessage = (e) => {
+  const { type, data, payload, error } = e.data;
+
+  if (type === "PROGRESS") {
+    console.log("Progress:", data);
+  }
+
+  if (type === "DONE") {
+    console.log("Result:", data);
+  }
+
+  if (type === "DEBUG_TRACE") {
+    // handle trace JSON download in main thread
+    console.log("Trace:", payload);
+  }
+
+  if (type === "ERROR") {
+    console.error(error);
+  }
+};
+```
+
+```js
+// worker.js
+import { applyPACE } from "../dist/pace.esm.js";
+
+self.onmessage = async (e) => {
+  const { imgData, options } = e.data;
+
+  try {
+    const result = await applyPACE(imgData, options, (progress) => {
+      self.postMessage({ type: "PROGRESS", data: progress });
+    });
+
+    // zero-copy transfer
+    self.postMessage({ type: "DONE", data: result }, [result.data.buffer]);
+  } catch (error) {
+    self.postMessage({ type: "ERROR", error: error.message });
+  }
+};
+```
+
+### 🧪 Debug Mode Behavior
+
+When `options.debug = true`, PACE generates a detailed execution trace:
+
+- **Browser (main thread)** → automatically downloads JSON
+- **Web Worker** → sends `{ type: 'DEBUG_TRACE' }` to main thread
+- **Node.js** → saves trace as a file
+
+> 💡 In Web Workers, you must handle `DEBUG_TRACE` and trigger download manually.
+
 
 ---
 
@@ -574,7 +682,7 @@ pace/
   author = {Shahid, Mohd},
   title = {PACE: Perceptual Adaptive Contrast Enhancement},
   year = {2026},
-  version = {2.0.0},
+  version = {3.1.0},
   publisher = {Zenodo},
   doi = {10.5281/zenodo.19203394},
   url = {https://doi.org/10.5281/zenodo.19203394}
