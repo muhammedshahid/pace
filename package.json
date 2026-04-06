@@ -54,7 +54,7 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/muhammedshahid/pace"
+    "url": "git+https://github.com/muhammedshahid/pace.git"
   },
   "bugs": {
     "url": "https://github.com/muhammedshahid/pace/issues"
