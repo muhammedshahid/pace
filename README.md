@@ -1,6 +1,12 @@
 # PACE: Perceptual Adaptive Contrast Enhancement
 
-> A perception-aware image enhancement framework that improves visibility while preserving structural fidelity and natural color balance.
+> A perception—aware image enhancement framework that improves visibility while preserving structural fidelity and natural color balance.
+---
+
+## 📊 Interactive Presentation
+
+Understand how PACE works visually — from luminance extraction to adaptive blending.
+[![View Presentation](https://img.shields.io/badge/Presentation-View-blue)](https://muhammedshahid.github.io/pace-presentation/)
 
 ---
 
@@ -9,7 +15,8 @@
 [![Code](https://img.shields.io/badge/Code-GitHub-black)](https://github.com/muhammedshahid/pace)
 [![Live Demo](https://img.shields.io/badge/Demo-Live-green)](https://muhammedshahid.github.io/pace/src)
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.19203394.svg)](https://doi.org/10.5281/zenodo.19203394)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![npm version](https://img.shields.io/npm/v/@shahid-labs/pace.svg)](https://www.npmjs.com/package/@shahid-labs/pace)
+[![license](https://img.shields.io/npm/l/@shahid-labs/pace.svg)](https://www.npmjs.com/package/@shahid-labs/pace)
 ![CI](https://github.com/muhammedshahid/pace/actions/workflows/ci.yml/badge.svg)
 
 ---
@@ -168,7 +175,7 @@ options = {
 ### 📦 3. Node.js (ES Modules)
 
 ```js
-import { PACE } from "@shahid/pace";
+import { PACE } from "@shahid-labs/pace";
 
 const output = await PACE.enhance(imageData, options, (p) => console.log(p));
 ```
@@ -178,7 +185,7 @@ const output = await PACE.enhance(imageData, options, (p) => console.log(p));
 ### 📦 4. Node.js (CommonJS)
 
 ```js
-const { PACE } = require("@shahid/pace");
+const { PACE } = require("@shahid-labs/pace");
 
 const output = await PACE.enhance(imageData, options, (p) => console.log(p));
 ```
@@ -190,13 +197,13 @@ const output = await PACE.enhance(imageData, options, (p) => console.log(p));
 ### Install globally (CLI)
 
 ```bash
-npm install -g @shahid/pace
+npm install -g @shahid-labs/pace
 ```
 
 ### Install locally
 
 ```bash
-npm install @shahid/pace
+npm install @shahid-labs/pace
 ```
 
 > ⚠️ **Note:** Ensure the project is built before installation.
