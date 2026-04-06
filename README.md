@@ -150,7 +150,7 @@ options = {
 ### 🌐 1. Browser (CDN / Global Script)
 
 ```html
-<script src="https://cdn.jsdelivr.net/gh/muhammedshahid/pace@v3.1.2/dist/pace.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@shahid-labs/pace@v3.1.2/dist/pace.min.js"></script>
 <script>
   const enhanced = PACE.enhance(imageData, options, (p) => console.log(p));
 </script>
@@ -162,7 +162,7 @@ options = {
 
 ```html
 <script type="module">
-  import { PACE, applyPACE } from "https://cdn.jsdelivr.net/gh/muhammedshahid/pace@v3.1.2/dist/pace.esm.js";
+  import { PACE, applyPACE } from "https://cdn.jsdelivr.net/npm/@shahid-labs/pace@3.1.2/dist/pace.esm.js";
 
   const output = await applyPACE(imageData, options, (p) => console.log(p));
   // OR
