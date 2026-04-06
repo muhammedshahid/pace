@@ -6,7 +6,7 @@ authors:
   - given-names: Mohd
     family-names: Shahid
     affiliation: "Independent Researcher"
-version: "v3.1.1"
+version: "v3.1.2"
 date-released: "2026-03-28"
 license: MIT
 repository-code: "https://github.com/muhammedshahid/pace"

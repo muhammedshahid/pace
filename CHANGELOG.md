@@ -6,6 +6,19 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ---
+### [3.1.2] - 2026-04-06
+### 📦 Installation
+
+```bash
+npm install @shahid-labs/pace
+```
+
+### ✨ Highlights
+- Published PACE as an installable npm package under @shahid-labs
+- Added CLI support for direct usage via terminal
+- Cross-platform build support (Windows, macOS, Linux)
+- Improved Node.js compatibility (ESM + CommonJS)
+---
 
 ### [3.1.1] - 2026-04-05
 ### Fixes

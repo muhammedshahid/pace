@@ -1,6 +1,6 @@
 {
   "name": "@shahid-labs/pace",
-  "version": "3.1.1",
+  "version": "3.1.2",
   "description": "Perceptual Adaptive Contrast Enhancement (PACE): A fully adaptive image enhancement framework for improving visual quality while preserving structural fidelity.",
   "type": "module",
   "publishConfig": {
