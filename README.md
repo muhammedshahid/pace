@@ -16,6 +16,8 @@ Understand how PACE works visually — from luminance extraction to adaptive ble
 [![Live Demo](https://img.shields.io/badge/Demo-Live-green)](https://muhammedshahid.github.io/pace/src)
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.19203394.svg)](https://doi.org/10.5281/zenodo.19203394)
 [![npm version](https://img.shields.io/npm/v/@shahid-labs/pace.svg)](https://www.npmjs.com/package/@shahid-labs/pace)
+![Bundle Size](https://img.shields.io/badge/gzipped_size-59_kB-brightgreen)
+![Unpacked Size](https://img.shields.io/badge/unpacked_size-235_kb-blue)
 [![license](https://img.shields.io/npm/l/@shahid-labs/pace.svg)](https://www.npmjs.com/package/@shahid-labs/pace)
 ![CI](https://github.com/muhammedshahid/pace/actions/workflows/ci.yml/badge.svg)
 
@@ -65,7 +67,7 @@ PACE pipeline:
 - 🌈 No color distortion (Oklab-based processing)
 - 🧩 Multi-signal fusion (CLAHE, Retinex-inspired, Laplacian)
 - 🛡 Artifact suppression & structure preservation
-- ⚡ Fast JavaScript implementation (Browser + Node.js + CLI)
+- ⚡ Fast and Lightweight JavaScript implementation (Browser + Node.js + CLI)
 - 💻 CLI tool for batch processing
 - 🔬 Debug pipeline with JSON export (research-friendly)
 
@@ -370,9 +372,41 @@ When `options.debug = true`, PACE generates a detailed execution trace:
 
 > 💡 In Web Workers, you must handle `DEBUG_TRACE` and trigger download manually.
 
+---
+## Bundle Size
+
+PACE is designed to be extremely lightweight while delivering a full perceptual image enhancement pipeline.
+
+### 📦 Package Overview
+
+- 🗜️ **~59 KB** – compressed npm package (`.tgz`)
+- 📦 **~235 KB** – unpacked npm size
+
+### 🚀 Build Sizes
+
+- 🌐 **~40 KB** – ESM build (modern browsers / bundlers)
+- 🖥️ **~42 KB** – CommonJS build (Node.js)
+
+### ⚡ Why It Matters
+
+Most image processing libraries are heavy (often MBs in size) and include unnecessary dependencies.
+
+PACE focuses on:
+
+- Minimal footprint
+- Fast load times (CDN-friendly)
+- Real-time usability in browser environments
+- Zero heavy dependencies
+
+> Core perceptual enhancement pipeline in ~40 KB.
+
+This makes PACE suitable for:
+
+- 🌍 Web applications (low bandwidth environments)
+- ⚡ Real-time image processing
+- 📱 Performance-sensitive frontends
 
 ---
-
 ## 👀 Strength Parameter Demonstration
 
 ![PACE Strength param demo](./src/imgs/pace_strength_param.png)
@@ -574,6 +608,7 @@ PACE is designed for **efficient real-world deployment**, with the following pro
 * 🧩 **Local operations** → fixed-size neighbourhood processing
 * 🔁 **No iterative optimization** → predictable runtime
 * 🧠 **No learning-based components** → low overhead
+* 🍃 **Extremely Lightweight** → Core perceptual enhancement pipeline in ~40 KB.
 
 ---
 
@@ -621,6 +656,9 @@ These characteristics make PACE suitable for:
   - perceptual modeling  
   - adaptive blending into a single pipeline
 
+- **Extremely Lightweight**  
+  PACE is designed to be extremely lightweight while delivering a full perceptual image enhancement pipeline.
+  ![Unpacked Size](https://img.shields.io/badge/unpacked_size-235_kb-blue)
 ---
 
 ## 📈 Empirical Observations
