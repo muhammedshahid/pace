@@ -9,7 +9,7 @@ PACE (Perceptual Adaptive Contrast Enhancement) is a lightweight, fully adaptive
 | Field                | Description  |
 | -------------------- | -------------------------------------------------------------------------------- |
 | Software name        | PACE (Perceptual Adaptive Contrast Enhancement)  |
-| Version              | v3.1.1 |
+| Version              | v3.1.2 |
 | Repository           | [https://github.com/muhammedshahid/pace](https://github.com/muhammedshahid/pace) |
 | DOI                  | 10.5281/zenodo.19203394  |
 | License              | MIT License  |
@@ -68,67 +68,102 @@ The software is implemented in JavaScript and supports:
 
 ### 2.3 Installation and Distribution
 
-PACE is designed for high accessibility and can be integrated into diverse environments:
+PACE works in **browser (CDN)**, **ES Modules (ESM)**, **Node.js (CommonJS)** and **CLI**.
 
-#### 2.3.1 Browser (CDN / Global Script)
+### Installation
 
-For quick prototyping or integration into web tools without a build step:
-
-```html
-<script src="https://cdn.jsdelivr.net/gh/muhammedshahid/pace@main/dist/pace.min.js"></script>
-```
-
-#### 2.3.2 ES Modules (Modern Web)
-
-For native browser support using standard import syntax:
-
-```html
-<script type="module"> 
-  import { PACE, applyPACE } from "https://cdn.jsdelivr.net/gh/muhammedshahid/pace@main/dist/pace.esm.js";
-  </script>
-```
-#### 2.3.3 Package Manager (Node.js/Bundlers)
-
-For local development or server-side processing:
+#### Install globally (CLI)
 
 ```bash
-npm install pace
+npm install -g @shahid-labs/pace
 ```
 
-### 2.4 Usage and Advanced Configuration
+#### Install locally
+
+```bash
+npm install @shahid-labs/pace
+```
+
+### General API
 
 PACE provides a high-level API designed for ease of integration. It can be used in server-side environments, modern web applications, or directly in the browser.
 
-#### 2.4.1 Global Script (Legacy/CDN)
+#### `PACE.enhance(imageData, options?, progressCallback?)`
+> Alias: `applyPACE(imageData, options?, progressCallback?)`
+
+Enhances an image using the PACE algorithm.
+
+- **imageData**: `ImageData` (RGBA)
+- **options** *(optional)*: Configuration object
+- **progressCallback** *(optional)*: Function to track processing progress
+
+#### options
 
 ```js
-// Options details illustrated in 'Options section'
-const options = {
-  strength: 2.0,      // Manually override the adaptive scaling factor
-  debug: true,        // Export internal computed parameters (alpha, mu, sigma, etc.)
-  config: "./my-params.json" // Path to a custom configuration file
-};
-
-// Available as a global PACE object
-const output = PACE.enhance(imageData, options);
+options = {
+  strength: Number,
+  debug: Boolean,
+  config: JSON 
+}
 ```
 
-#### 2.4.2 Native Browser (ES Modules)
+#### progressCallback
 
 ```js
-import { applyPACE } from "https://cdn.jsdelivr.net/gh/muhammedshahid/pace@main/dist/pace.esm.js";
-
-const output = await applyPACE(imageData, options);
+(progress) => {
+  // progressObject
+  // {
+  //   stage: "Compute Params",
+  //   index: 3,
+  //   total: 7,
+  //   time: 0.6,
+  //   progressPercent: 42.85
+  // }
+  // time is in millisecond (ms)
+}
 ```
 
-#### 2.4.3 Node.js / Bundlers
+### 2.3.1 Usage Examples
+
+#### 1. Browser (CDN / Global Script)
+
+```html
+<script src="https://cdn.jsdelivr.net/npm/@shahid-labs/pace@v3.1.2/dist/pace.min.js"></script>
+<script>
+  const enhanced = PACE.enhance(imageData, options, (p) => console.log(p));
+</script>
+```
+
+
+#### 2. Native Browser (ES Modules)
+
+```html
+<script type="module">
+  import { PACE, applyPACE } from "https://cdn.jsdelivr.net/npm/@shahid-labs/pace@3.1.2/dist/pace.esm.js";
+
+  const output = await applyPACE(imageData, options, (p) => console.log(p));
+  // OR
+  const output2 = await PACE.enhance(imageData, options, (p) => console.log(p));
+</script>
+```
+
+#### 3. Node.js (ES Modules)
 
 ```js
-import { applyPACE } from "pace";
-const output = await applyPACE(imageData, options);
+import { PACE } from "@shahid-labs/pace";
+
+const output = await PACE.enhance(imageData, options, (p) => console.log(p));
 ```
 
-#### Command Line Interface (CLI)
+#### 4. Node.js (CommonJS)
+
+```js
+const { PACE } = require("@shahid-labs/pace");
+
+const output = await PACE.enhance(imageData, options, (p) => console.log(p));
+```
+
+#### 5. Command Line Interface (CLI)
 > For high-throughput scientific workflows, PACE supports a feature-rich CLI:
 
 ```bash
@@ -154,14 +189,16 @@ pace input.jpg output.png --debug
 pace input.jpg output.png --config config.json
 
 # Batch Processing
-pace input_path output_path
+pace input_folder_path output_folder_path
 ```
 
-#### Configuration (Advanced)
+### 2.3.2 Configuration (Advanced)
 
 PACE is engineered to support the rigorous requirements of scientific reproducibility through a structured configuration.
 
 ```json
+// config.json
+
 {
   "strength": 1.0,
   "override": {
@@ -180,54 +217,46 @@ PACE is engineered to support the rigorous requirements of scientific reproducib
 }
 ```
 
-##### Control Parameters
+#### (i) Control Parameters
 
-- **tileSize**  
-  Defines the local region size for CLAHE-based enhancement.
-  Smaller values → finer local contrast; larger values → smoother enhancement.
-
-- **clipLimit**  
-  Controls histogram clipping to prevent over-amplification.
-  Higher values → stronger contrast; lower values → reduced noise amplification.
-
-- **globalAlpha (α)**  
-  Global enhancement factor derived from **contrast demand, structural confidence, and luminance imbalance**.  
-  It regulates the overall strength of enhancement.
-  Higher values → stronger enhancement.
+- **tileSize**: Local region size for CLAHE
+- **clipLimit**: Prevents over-amplification
+- **globalAlpha (α)**: Overall enhancement strength
+> globalAlpha(α) derived from **contrast demand, structural confidence, and luminance imbalance**. It regulates the overall strength of enhancement. Higher values, stronger enhancement.
 
 
-##### Perceptual Parameters
+#### (ii) Perceptual Parameters
 
-- **lambda (λ) — Stability Regulator**  
-  Controls nonlinear contrast compression based on **contrast strength and noise energy**. Prevents unstable amplification in high-noise or high-contrast regions.
+- **lambda (λ)**: Stability regulator
+> Controls nonlinear contrast compression based on **contrast strength and noise energy**. Prevents unstable amplification in high-noise or high-contrast regions.
+- **beta (β)**: Highlight protection
+> Modulates enhancement in bright regions based on **luminance distribution skewness and highlight dominance**, preventing saturation and detail loss.
+- **tau (τ)**: Tone limiter
+> Limits enhancement in low-contrast regions to avoid excessive amplification and noise boosting.
+- **edgeStabilizer (k)**: Edge stability control
+> Regulates edge enhancement stability based on noise level. Higher noise → stronger stabilization → reduced artifacts near edges.
 
-- **beta (β) — Highlight Protection**  
-  Modulates enhancement in bright regions based on **luminance distribution skewness and highlight dominance**, preventing saturation and detail loss.
+#### Interpretation
 
-- **tau (τ) — Tone Limiter**  
-  Limits enhancement in low-contrast regions to avoid excessive amplification and noise boosting.
+- (i) Control parameters → global/local behavior
+- (ii) Perceptual parameters → visual consistency
 
-- **edgeStabilizer (k) — Edge Stability Control**  
-  Regulates edge enhancement stability based on noise level
-  Higher noise → stronger stabilization → reduced artifacts near edges.
+**All parameters are automatically estimated unless overridden.**
 
-> Control parameters determine the global and local enhancement behavior
-> Perceptual parameters enforce visual consistency and stability constraints
+### 2.4 Features
 
-
-### 2.5 Features
-
-* Perceptual-aware enhancement (not blind contrast stretching)
-* Preserves edges, textures, structural details along with balanced contrast control
-* Adaptive control using image statistics (no manual tuning required)
-* Optional configurable parameters for fine-grained control
-* No color distortion (Oklab-based processing)
-* Multi-signal fusion (CLAHE, Retinex-inspired, Laplacian)
-* Artifact suppression & structure preservation
-* Cross-platform compatibility (Browser + Node.js + CLI)
-* Fast JavaScript implementation
-* CLI tool for batch processing
-* Debug pipeline with JSON export (research-friendly)
+* **Perceptually grounded enhancement:** Implements contrast adaptation based on human visual perception, incorporating perceptual cues beyond standard intensity-based transformations.
+* **Structure-preserving detail enhancement:** Maintains edges, textures, and fine structural information while ensuring balanced contrast amplification.
+* **Statistically adaptive processing:** Automatically adjusts enhancement parameters using image-derived statistics, minimizing the need for manual tuning.
+* **Configurable processing pipeline:** Provides optional parameter controls for fine-grained adjustment and experimental flexibility.
+* **Color fidelity preservation:** Operates in the perceptually uniform Oklab color space to prevent chromatic distortions and maintain natural color appearance.
+* **Multi-signal fusion framework:** Integrates complementary enhancement cues, including CLAHE-based local contrast, Retinex-inspired illumination correction, and Laplacian detail extraction.
+* **Artifact suppression mechanisms:** Reduces noise amplification and halo artifacts while preserving structural consistency.
+* **Cross-platform operability:** Supports execution in browser environments, Node.js, and command-line interfaces.
+* **Efficient JavaScript implementation:** Designed for high performance with compatibility across modern JavaScript runtimes.
+* **Lightweight deployment footprint:** Compact implementation (~59 KB compressed) enabling integration in resource-constrained and real-time applications.
+* **Command-line interface (CLI):** Facilitates batch processing and pipeline automation.
+* **Research-oriented debugging support:** Provides intermediate outputs and JSON-based pipeline export for reproducibility and analysis.
 
 ---
 
@@ -382,20 +411,29 @@ Images are chosen to cover a representative range of visual conditions rather th
 
 ## 7. Limitations and Future Work
 
-* Linear complexity may impact very high-resolution images
-* Current implementation is single-threaded
+### Limitations
+* **Computational scalability:** Although the algorithm exhibits linear time complexity with respect to the number of pixels, processing very high-resolution images (e.g., multi-megapixel or 4K+) may still result in increased execution time in real-time scenarios.
+* **Single-threaded execution model:** The current implementation primarily operates in a single-threaded environment, which may underutilize available multi-core CPU resources in certain deployments.
+* **CPU-bound processing:** The absence of GPU acceleration limits performance gains achievable through parallel hardware architectures, particularly for large-scale or real-time workloads.
+* **Memory overhead for intermediate representations:** Multi-signal fusion and intermediate map generation can increase memory usage, especially for high-resolution inputs.
 
-Future work includes:
-
-* Parallel processing
-* GPU acceleration
-* Memory optimization
+### Future Work
+* **Parallel and multi-threaded processing:** Integration of Web Workers and multi-core task scheduling to improve performance and scalability.
+* **GPU acceleration:** Exploration of WebGL/WebGPU-based implementations to leverage massively parallel computation for real-time enhancement.
+* **Real-time video processing:** Extension of the pipeline to support continuous frame processing for live video streams and webcam inputs.
+* **Memory optimization strategies:** Reduction of intermediate buffer usage and optimization of data flow for resource-constrained environments.
+* **Adaptive resolution strategies:** Incorporation of multi-scale or region-based processing to efficiently handle high-resolution images.
+* **Algorithmic refinement:** Further tuning of fusion strategies and perceptual models to improve robustness across diverse lighting and noise conditions.
 
 ---
 
 ## 8. Conclusion
 
-PACE provides a practical and efficient software solution for adaptive image enhancement. Its modular design and reproducibility make it suitable for both academic research and real-world deployment.
+PACE (Perceptual Adaptive Contrast Enhancement) provides a practical, efficient, and perceptually grounded solution for image enhancement in modern computational environments. By integrating multi-signal fusion with perceptual color modeling, the method achieves a balanced improvement in contrast, detail visibility, and color fidelity while mitigating common artifacts observed across a range of existing enhancement approaches.
+
+The software implementation emphasizes modularity, reproducibility, and cross-platform compatibility, enabling seamless integration into both research workflows and real-world applications, including browser-based and server-side systems. Its lightweight design and support for scalable processing further enhance its applicability in performance-sensitive scenarios.
+
+Overall, PACE offers a robust and extensible framework for perceptually guided image enhancement, supporting further exploration and development across diverse methodologies and application domains.
 
 ## References
 
