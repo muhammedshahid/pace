@@ -25,7 +25,7 @@ PACE (Perceptual Adaptive Contrast Enhancement) is a lightweight, fully adaptive
 
 ## 1. Introduction and Statement of Need
 
-Image enhancement is a critical preprocessing step in computer vision and image analysis. Traditional approaches such as Histogram Equalization (HE) and CLAHE often suffer from over-enhancement and noise amplification, while Retinex-based approaches introduce computational complexity and visual artifacts.
+Image enhancement is a critical preprocessing step in computer vision and image analysis. Traditional approaches such as Histogram Equalization (HE)[1] and CLAHE[2] often suffer from over-enhancement and noise amplification, while Retinex-based[3] approaches introduce computational complexity and visual artifacts.
 
 There is a need for software that:
 
@@ -48,7 +48,7 @@ PACE operates as a structured **global-to-local adaptive enhancement pipeline**,
 
 ![software Architecture](figures/arch.png)
 
-> Figure 1: Overview of the proposed Perceptual Adaptive Contrast Enhancement (PACE) framework. The method operates in the OKLab color space and focuses on luminance-guided enhancement through two complementary pathways: (1) a global statistics-driven controller that adaptively estimates enhancement parameters, and (2) a local perceptual stream that generates spatially varying masks. Multiple enhancement cues—comprising CLAHE-based contrast modulation, Retinex-inspired illumination correction, and Laplacian-based texture amplification—are integrated via a perceptually guided blending strategy coupled with a nonlinear stability mechanism, yielding a structurally consistent and visually natural enhanced image.
+> Figure 1: Overview of the proposed Perceptual Adaptive Contrast Enhancement (PACE) framework. The method operates in the OKLab[7] color space and focuses on luminance-guided enhancement through two complementary pathways: (1) a global statistics-driven controller that adaptively estimates enhancement parameters, and (2) a local perceptual stream that generates spatially varying masks. Multiple enhancement cues—comprising CLAHE-based contrast modulation, Retinex-inspired illumination correction, and Laplacian-based texture amplification—are integrated via a perceptually guided blending strategy coupled with a nonlinear stability mechanism, yielding a structurally consistent and visually natural enhanced image.
 
 PACE follows a global-to-local pipeline:
 
