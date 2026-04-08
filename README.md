@@ -714,6 +714,7 @@ pace/
 ├── .gitignore
 ├── CHANGELOG.md
 ├── CONTRIBUTING.md
+├── codemeta.json         # Machine-readable metadata for software citation and indexing
 ├── README.md             # Project documentation
 └── LICENSE               # License information
 ```
