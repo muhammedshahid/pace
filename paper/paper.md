@@ -14,13 +14,13 @@ PACE (Perceptual Adaptive Contrast Enhancement) is a lightweight, fully adaptive
 | Nr | Code metadata description  | *Metadata* |
 | :---- | :---- | :---- |
 | C1 | Current code version | *v3.1.2* |
-| C2 | Permanent link to code/repository used for this code version | *Code repository: [https://github.com/muhammedshahid/pace/](https://github.com/muhammedshahid/pace/)Specific release:[https://github.com/muhammedshahid/pace/releases/tag/v3.1.2](https://github.com/muhammedshahid/pace/releases/tag/v3.1.2)*  |
+| C2 | Permanent link to code/repository used for this code version | *Code repository: [https://github.com/muhammedshahid/pace/](https://github.com/muhammedshahid/pace/)  Specific release: [https://github.com/muhammedshahid/pace/releases/tag/v3.1.2](https://github.com/muhammedshahid/pace/releases/tag/v3.1.2)*  |
 | C3 | Permanent link to reproducible capsule   | *Not applicable. Reproducibility is ensured via a dedicated package included in the repository, containing Python implementations of baseline methods, a browser-based PACE demonstration (JavaScript), and standardized input datasets (inputs.zip and inputs/ directory) for consistent evaluation and replication.* |
 | C4 | Legal code license | *MIT License* |
 | C5 | Code versioning system used | *Git* |
 | C6 | Software code languages, tools and services used | *JavaScript(ES6+), WebAPIs* |
 | C7 | Compilation requirements, operating environments and dependencies | *Compilation requirements: None.  Operating environment: Platform-independent; runs in any modern web browser supporting ES6+. Dependencies: None.* |
-| C8 | If available, link to developer documentation/manual | *[https://github.com/muhammedshahid/pace/\#readme](https://github.com/muhammedshahid/pace/#readme)Development & CI Requirements:  Node.js \>= 18 (recommended for tooling compatibility), ESLint (used for code quality checks in CI pipeline)* |
+| C8 | If available, link to developer documentation/manual | *[https://github.com/muhammedshahid/pace/\#readme](https://github.com/muhammedshahid/pace/#readme) Development & CI Requirements:  Node.js \>= 18 (recommended for tooling compatibility), ESLint (used for code quality checks in CI pipeline)* |
 | C9 | Support email for questions | *smuhammed621@gmail.com* |
 
 ## 1\. Introduction and Statement of Need
@@ -139,23 +139,31 @@ For clarity, only key formulations are presented.
 
 ### 3.1 Adaptive Strength
 
-![][image2]
+```math
+\alpha = \frac{0.5 I_{\text{imb}} + 0.3 C_{\text{need}} + 0.4 S_{\text{conf}}}{0.5 + 0.5 I_{\text{imb}} + 0.3 C_{\text{need}} + 0.4 S_{\text{conf}}}
+```
 
 This formulation balances contrast demand (Cneed), structural confidence (Sconf), and illumination imbalance (Iimb)
 
 ### 3.2 Spatially Adaptive Strength 
 
-![][image3]
+```math
+\alpha(x,y) = \mathrm{clip}\left( \alpha \left[1 + 1.2 (C_{\text{loc}} - 0.5)\right], 0.05, 2\alpha \right)
+```
 
 This enables spatially varying enhancement while preserving structural consistency.
 
 ### 3.3 Combined Detail Signal 
 
-![][image4]
+```math
+\Delta = \Delta_c + \eta \, \Delta_d \cdot M_d \cdot M_s \cdot M_e
+```
 
 ### 3.4 Final Enhanced Luminance
 
-![][image5]
+```math
+L_{\text{enh}} = \mathrm{clip}\left( L + \Delta' \cdot G_e \cdot M_l \cdot G_c, 0, 1 \right)
+```
 
 Multiple enhancement signals (CLAHE, Retinex, and Laplacian-based components) are integrated using perceptual weighting to produce the final enhanced luminance.
 
@@ -213,7 +221,7 @@ Comparative results indicate that while baseline methods may optimize specific m
 
 PACE supports applications in remote sensing, medical imaging, and general computer vision pipelines. It enhances low-contrast features while preserving natural appearance.
 
-| ![pace_strength_params](figures/pace_strength_params.png) Fig. 3\. Visual comparison of PACE processing on a coastal satellite scene. Left: original input image. Center: PACE AUTO output without manual tuning. Right: PACE (strength \= 2\) output with enhanced structural detail. |
+| ![pace_strength_params](figures/pace_strength_param.png) Fig. 3\. Visual comparison of PACE processing on a coastal satellite scene. Left: original input image. Center: PACE AUTO output without manual tuning. Right: PACE (strength \= 2\) output with enhanced structural detail. |
 | :---- |
 
 | ![moon](figures/c2.png) Fig. 4\. Visual comparison of lunar surface detail before and after PACE enhancement. Left: original image. Right: PACE-enhanced output demonstrating improved contrast, enhanced micro-texture recovery, and clearer delineation of surface features with controlled luminance. |
@@ -262,12 +270,3 @@ Overall, PACE offers a robust and extensible framework for perceptually guided i
 \[5\] W. Wei et al., LOL Dataset, BMVC, 2018\.  
 \[6\] P. Arbelaez et al., BSDS500 Dataset, IEEE TPAMI, 2011\.  
 \[7\] B. Ottosson, OKLab Color Space, 2020\.
-
-
-[image2]: <data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAPYAAAAuCAYAAAAbf+SKAAABUUlEQVR4Xu3TMYrCQBiG4XTqAWxsxFto5R3EXvAalnpEKxvvIUiWzO5GNyQIi1vsx/OAzOQ3oxB9qxqIU3UHwP8nbAgkbAgkbAgkbAgkbAgkbAgkbAgkbAgkbAgkbAgkbAgkbAgkbAgkbAgkbAgkbAgkbAgkbAgkbAgkbAgk7Dc4n8/d0a/s9/uyVtXnzzKZTH5c91kul+2+e9/pdGr31+u13u129Wq1KteXy6WeTqdl35zbbDZlfX6Nx+P2/JDFYlHW+Xzezpp980xGo1G5ns1mZb3f7/XxeKy32235vsPh0J7hvYb/MfyZ5wDX6/XjjS/dQLuz5zN9974ydOZ7frvdOu+81veZfbPG0Jz38YQhkLAhkLAhkLAhkLAhkLAhkLAhkLAhkLAhkLAhkLAhkLAhkLAhkLAhkLAhkLAhkLAhkLAhkLAhkLAhkLAhkLAh0Acn+8drQP3shgAAAABJRU5ErkJggg==>
-
-[image3]: <data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAXQAAAAmCAYAAADUUmAbAAABoklEQVR4Xu3Uu23CUBiAUQpKRkAswQiMwBJQsQADUEFFzRRUSDSUTEDDACxABY5syZF9cQJ5kCh/zpEs4N5r4wd8rQyAEFrpAAB/k6ADBCHoAEEIOkAQgg4QhKADBCHoAEEIOkAQgg4QhKADBCHoAEEIOkAQgg4QhKADBCHoAEEIOkAQgg4QhKA/yWazSYe+rNX6/sf1mWM+ss9qtSq2qny/R/a9Z7FY3D1WPrder1/fp3NV8/m8GDudTsXnTqdTm3+G2WyWjUaj7HK53JxPVT6X/5bKrXQ+n7PJZFJZeXtdqfw7yzXvrS3ner1e1u12a+NN59Kk3+/X7v9wOExW3Gq6Jj7m7afKl7Xb7XSoZrlcpkOFpj/b9XrNptNpOvw0TedQ2u/32eFwSIdr8pjfi+5vuvdscsfjsXjNr2G73dZiuNvtssFgUF3+o9L7mt7r8XhcmX2u9Fw+67uO85+5gwBBCDpAEIIOEISgAwQh6ABBCDpAEIIOEISgAwQh6ABBCDpAEIIOEISgAwQh6ABBCDpAEIIOEISgAwQh6ABBCDpAEC8bkIGFN0EH+wAAAABJRU5ErkJggg==>
-
-[image4]: <data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAN8AAAAnCAYAAACPOJ1YAAAA4UlEQVR4Xu3TwQmDMACGUVdyBwdwJ5dxByfy4AQiLbUkoFjbU//LeyDRJAoGvuYBRDTnCeA/xAch4oMQ8UGI+CBEfBAiPggRH4SID0LEByHigxDxQYj4IER8ECI+CBEfhIgPQsQHIeL7Udu2+9g034+s7BnH8bTyNk3T4SrKe/M817l1Xev9p+92XXd4fun7fh+HYdjHZVnq2t0/lLWrPdu21fvz96/2c8+JQYj4IER8ECI+CBEfhIgPQsQHIeKDEPFBiPggRHwQIj4IER+EiA9CxAch4oMQ8UGI+CBEfBDyBGvUOr1SIECkAAAAAElFTkSuQmCC>
-
-[image5]: <data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAARsAAAAeCAYAAAAcl7omAAAAu0lEQVR4Xu3UsQ3CUBBEQcsV/T5clBOHvxI35T6cmBQOARLIK0AzyUkbXvCGAyBgqAPAGcQGiBAbIEJsgAixASLEBogQGyBCbIAIsQEixAaIEBsgQmyACLEBIsTmx2zbdnMfGcexTh+bpqlOd/Z9P3rvdT7Vuq4v/3FtWZY6PdVaqxNvEJs/MM9zneDriA0QITZAhNgAEWIDRIgNECE2QITYABFiA0SIDRAhNkCE2AARYgNEiA0QITZAxAVGyx0dFt+K0gAAAABJRU5ErkJggg==>
