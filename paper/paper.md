@@ -75,7 +75,7 @@ A JSON-based configuration system allows automatic parameter estimation with opt
 Detailed usage examples and full configuration specifications are provided in the project repository.
 
 Example configuration(config.json):
-
+```bash
 {
 
   "strength": 1.0,
@@ -107,6 +107,7 @@ Example configuration(config.json):
   }
 
 }
+```
 
 ### 2.4 Features
 
@@ -214,7 +215,7 @@ PACE is designed to address this gap by integrating perceptual modeling with str
 
 Comparative results indicate that while baseline methods may optimize specific metrics, PACE provides more consistent and perceptually stable outputs by effectively balancing enhancement and structural preservation.
 
-| ![chest x-ray](figures/t3.png) Fig. 2\. Chest X-ray (medical imaging). PACE delivers the most balanced and clinically useful enhancement. Lung vasculature, rib structures, and soft tissues appear sharply defined with excellent local contrast. In contrast, CLAHE and HE aggressively boost contrast, resulting in slight haloing and unnatural brightness around the mediastinum and heart region. LIME tends to darken portions of the image excessively, while MSRCR washes out fine structural details. PACE avoids these limitations and results in improved visual clarity and structural visibility. |
+| ![chest x-ray](figures/t3.png)  Fig. 2\. Chest X-ray (medical imaging). PACE delivers the most balanced and clinically useful enhancement. Lung vasculature, rib structures, and soft tissues appear sharply defined with excellent local contrast. In contrast, CLAHE and HE aggressively boost contrast, resulting in slight haloing and unnatural brightness around the mediastinum and heart region. LIME tends to darken portions of the image excessively, while MSRCR washes out fine structural details. PACE avoids these limitations and results in improved visual clarity and structural visibility. |
 | :---- |
 
 ## 5\. Impact and Reuse Potential
